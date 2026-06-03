@@ -50,6 +50,28 @@
         </div>
     </section>
 
+    <!-- ══════════════════════════════ RECUERDOS (fondo) ══════════════════════════════ -->
+    <section id="recuerdos" class="photo-banner" aria-label="Nuestra historia">
+        <img
+            class="photo-banner__bg"
+            src="img/ba7ca109-eeb4-4f69-aad6-245ef9a9591d.jpg"
+            alt=""
+            width="1080"
+            height="1350"
+            decoding="async"
+            fetchpriority="high"
+        >
+        <div class="photo-banner__veil" aria-hidden="true"></div>
+        <div class="container photo-banner__inner animate">
+            <p class="section-label">Nuestra historia</p>
+            <blockquote class="photo-banner__quote">
+                Cada instante juntos nos trajo hasta aquí — y no podemos imaginar
+                este día sin quienes han caminado a nuestro lado.
+            </blockquote>
+            <p class="photo-banner__sign">Juliana &amp; Juan</p>
+        </div>
+    </section>
+
     <!-- ══════════════════════════════ COUNTDOWN ══════════════════════════════ -->
     <section id="countdown" class="bg-dark">
         <div class="container">
@@ -88,6 +110,18 @@
                     <span class="countdown-lbl">Segundos</span>
                 </div>
             </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════ PAUSA VISUAL (entre countdown y ceremonia) ══════════════════════════════ -->
+    <section id="pausa-visual" class="photo-interlude" aria-label="Momentos juntos">
+        <div class="photo-interlude__grid animate">
+            <figure class="photo-interlude__item">
+                <img src="img/WhatsApp1.jpeg" alt="Juliana y Juan" loading="lazy" decoding="async">
+            </figure>
+            <figure class="photo-interlude__item">
+                <img src="img/WhatsApp2.jpeg" alt="Un momento especial" loading="lazy" decoding="async">
+            </figure>
         </div>
     </section>
 
@@ -195,7 +229,7 @@
                     </div>
                 </div>
 
-                <div class="timeline-item">
+                <div class="timeline-item vip-only">
                     <div class="tl-time">5:30 PM</div>
                     <div class="tl-connector">
                         <div class="tl-dot"></div>
@@ -218,6 +252,35 @@
                         <p>Cena, baile y celebración</p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ══════════════════════════════ GALERÍA ══════════════════════════════ -->
+    <section id="galeria" class="bg-mid">
+        <div class="container">
+            <div class="section-header animate">
+                <p class="section-label">Momentos</p>
+                <h2 class="section-title">Recuerdos que Guardamos</h2>
+                <div class="divider">
+                    <svg viewBox="0 0 320 24" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                        <line x1="0" y1="12" x2="120" y2="12" stroke="currentColor" stroke-width="0.5"/>
+                        <polygon points="132,12 140,6 148,12 140,18" fill="currentColor"/>
+                        <circle cx="160" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="0.8"/>
+                        <polygon points="172,12 180,6 188,12 180,18" fill="currentColor"/>
+                        <line x1="200" y1="12" x2="320" y2="12" stroke="currentColor" stroke-width="0.5"/>
+                    </svg>
+                </div>
+                <p class="section-sub">Un vistazo a los capítulos que nos llevaron hasta el altar</p>
+            </div>
+
+            <div class="photo-masonry photo-masonry--compact animate" role="list">
+                <figure class="photo-masonry__item" role="listitem">
+                    <img src="img/WhatsApp3.jpeg" alt="Celebrando juntos" loading="lazy" decoding="async">
+                </figure>
+                <figure class="photo-masonry__item" role="listitem">
+                    <img src="img/WhatsApp4.jpeg" alt="Sonrisas compartidas" loading="lazy" decoding="async">
+                </figure>
             </div>
         </div>
     </section>
@@ -274,7 +337,7 @@
     </section>
 
     <!-- ══════════════════════════════ RSVP ══════════════════════════════ -->
-    <section id="rsvp" class="bg-dark">
+    <section id="rsvp" class="bg-dark vip-only">
         <div class="container container-narrow">
             <div class="section-header animate">
                 <p class="section-label">Confirmación</p>
@@ -398,8 +461,18 @@
     </section>
 
     <!-- ══════════════════════════════ FOOTER ══════════════════════════════ -->
-    <footer class="site-footer bg-dark">
-        <div class="container">
+    <footer class="site-footer">
+        <div class="site-footer__media" aria-hidden="true">
+            <img
+                class="site-footer__img"
+                src="img/WhatsApp5.jpeg"
+                alt=""
+                loading="lazy"
+                decoding="async"
+            >
+            <div class="site-footer__fade"></div>
+        </div>
+        <div class="container site-footer__content">
             <div class="footer-ornament">
                 <span class="ornament-line"></span>
                 <svg class="ornament-icon ornament-icon--sm" viewBox="0 0 40 40"><path d="M20 2 L23 17 L38 20 L23 23 L20 38 L17 23 L2 20 L17 17 Z" fill="currentColor"/></svg>
