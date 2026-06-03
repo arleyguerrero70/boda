@@ -1,17 +1,7 @@
-/* ═══════════════════════════════════════════════════════════════
-   CONFIGURACIÓN — edita estos valores antes de publicar
-═══════════════════════════════════════════════════════════════ */
-
 const CONFIG = {
-    // ── Fecha de la boda ──────────────────────────────────────
     weddingDate: new Date('2026-08-07T16:00:00'),   // ⚠️ Cambia la hora (T16:00:00 = 4PM)
-
-    // ── Clave secreta para invitados VIP (recepción) ──────────
-    // URL de invitados VIP: tudominio.com?vip=recepcion2026
     vipKey: 'recepcion2026',                         // ⚠️ Cambia esta clave a algo secreto
-
-    // ── Tu número de WhatsApp (con código de país, sin + ni espacios) ──
-    whatsappNumber: '57XXXXXXXXXX',                  // ⚠️ Ej: 573001234567
+    whatsappNumber: '573012826225',                  // ⚠️ Ej: 573001234567
 
     // ── Google Forms — Cómo obtener estos valores:
     //    1. Crea tu formulario en forms.google.com
