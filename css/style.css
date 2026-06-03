@@ -82,20 +82,30 @@ section:not(#hero) { padding: 6rem 0; }
 .hero-bg {
     position: absolute;
     inset: 0;
-    background:
-        url('../img/5cf0d5cc-3c07-4720-8847-dc6453cf60fd.jpg') center 35% / cover no-repeat,
-        linear-gradient(160deg, var(--navy-900) 0%, #0a1520 40%, #111a10 70%, var(--navy-900) 100%);
     z-index: 0;
+    background: var(--navy-900);
+    isolation: isolate;
+}
+
+.hero-bg__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 42%;
+    transform: translateZ(0);
 }
 
 .hero-bg::after {
     content: '';
     position: absolute;
     inset: 0;
+    z-index: 1;
     background:
         radial-gradient(ellipse 90% 70% at 50% 45%, rgba(13, 27, 42, 0.35) 0%, rgba(6, 12, 20, 0.82) 72%),
-        linear-gradient(to bottom, rgba(6, 12, 20, 0.55) 0%, rgba(6, 12, 20, 0.4) 45%, rgba(6, 12, 20, 0.88) 100%);
-    z-index: 1;
+        linear-gradient(to bottom, rgba(6, 12, 20, 0.5) 0%, rgba(6, 12, 20, 0.35) 42%, rgba(6, 12, 20, 0.88) 100%);
+    pointer-events: none;
 }
 
 /* subtle gold shimmer particles via pseudo-element */
@@ -1035,6 +1045,178 @@ section:not(#hero) { padding: 6rem 0; }
 }
 .animate:nth-child(2) { transition-delay: 0.12s; }
 .animate:nth-child(3) { transition-delay: 0.24s; }
+
+/* ═══════════════════════════════════════════
+   DESKTOP — protagonistas visibles (hero, recuerdos, footer)
+═══════════════════════════════════════════ */
+@media (min-width: 992px) {
+    section:not(#hero):not(.photo-banner):not(.photo-interlude) {
+        padding: 7.5rem 0;
+    }
+
+    .container {
+        padding-left: clamp(2rem, 4vw, 3.5rem);
+        padding-right: clamp(2rem, 4vw, 3.5rem);
+    }
+
+    /* Hero */
+    #hero {
+        justify-content: flex-end;
+        align-items: center;
+        min-height: 100vh;
+        padding-bottom: 2.5rem;
+    }
+
+    .hero-bg__img {
+        object-position: 24% 58%;
+    }
+
+    .hero-bg::after {
+        background:
+            linear-gradient(
+                100deg,
+                rgba(6, 12, 20, 0.12) 0%,
+                rgba(6, 12, 20, 0.18) 32%,
+                rgba(6, 12, 20, 0.5) 52%,
+                rgba(6, 12, 20, 0.82) 68%,
+                rgba(6, 12, 20, 0.92) 100%
+            ),
+            linear-gradient(to bottom, rgba(6, 12, 20, 0.25) 0%, rgba(6, 12, 20, 0.55) 92%, rgba(6, 12, 20, 0.75) 100%);
+    }
+
+    .hero-content {
+        margin-right: clamp(2rem, 6vw, 5rem);
+        margin-left: auto;
+        max-width: 480px;
+        padding: 3.5rem 2.5rem;
+    }
+
+    .hero-scroll {
+        margin-top: 3rem;
+    }
+
+    .ornament-row .ornament-line { max-width: 90px; }
+
+    /* Nuestra historia — texto arriba, pareja respira abajo */
+    #recuerdos.photo-banner {
+        min-height: min(92vh, 940px);
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        margin-top: 0.5rem;
+    }
+
+    .photo-banner__bg {
+        object-position: 58% 62%;
+    }
+
+    .photo-banner__veil {
+        background:
+            linear-gradient(
+                to bottom,
+                rgba(6, 12, 20, 0.5) 0%,
+                rgba(6, 12, 20, 0.35) 18%,
+                rgba(6, 12, 20, 0.08) 42%,
+                rgba(6, 12, 20, 0.15) 72%,
+                rgba(6, 12, 20, 0.4) 100%
+            );
+    }
+
+    .photo-banner__inner {
+        padding: clamp(5rem, 10vh, 7rem) 3rem clamp(14rem, 28vh, 20rem);
+        margin-bottom: 0;
+        max-width: 680px;
+    }
+
+    .photo-banner__quote {
+        margin-bottom: 2rem;
+        line-height: 1.65;
+    }
+
+    .photo-banner__sign {
+        margin-top: 0.5rem;
+    }
+
+    /* Pausa visual entre secciones */
+    .photo-interlude {
+        padding: clamp(2.5rem, 5vh, 4rem) 0 !important;
+    }
+
+    .photo-interlude__grid {
+        padding: 0 clamp(2rem, 4vw, 3.5rem);
+        gap: clamp(10px, 1.2vw, 16px);
+    }
+
+    /* Footer */
+    .site-footer {
+        min-height: min(88vh, 840px);
+        margin-top: 1rem;
+    }
+
+    .site-footer__img {
+        object-position: center 56%;
+    }
+
+    .site-footer__fade {
+        background:
+            linear-gradient(
+                to bottom,
+                rgba(6, 12, 20, 0.06) 0%,
+                rgba(6, 12, 20, 0.1) 45%,
+                rgba(13, 27, 42, 0.5) 72%,
+                rgba(13, 27, 42, 0.92) 90%,
+                var(--navy-800) 100%
+            );
+    }
+
+    .site-footer__content {
+        padding: 3rem 3rem clamp(4.5rem, 8vh, 6rem);
+    }
+
+    #galeria .section-header {
+        margin-bottom: 3.5rem;
+    }
+}
+
+@media (min-width: 1280px) {
+    section:not(#hero):not(.photo-banner):not(.photo-interlude) {
+        padding: 8.5rem 0;
+    }
+
+    .hero-bg__img {
+        object-position: 22% 55%;
+    }
+
+    .hero-content {
+        max-width: 520px;
+        margin-right: clamp(3rem, 8vw, 7rem);
+        padding: 4rem 2.5rem;
+    }
+
+    #recuerdos.photo-banner {
+        min-height: min(94vh, 1000px);
+    }
+
+    .photo-banner__bg {
+        object-position: 56% 60%;
+    }
+
+    .photo-banner__inner {
+        padding-bottom: clamp(16rem, 30vh, 22rem);
+    }
+
+    .site-footer {
+        min-height: min(90vh, 900px);
+    }
+
+    .site-footer__img {
+        object-position: center 54%;
+    }
+
+    .site-footer__content {
+        padding-bottom: clamp(5rem, 9vh, 7rem);
+    }
+}
 
 /* ═══════════════════════════════════════════
    VIP VISIBILITY
