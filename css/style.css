@@ -67,6 +67,139 @@ body.envelope-locked {
     z-index       : -1;
 }
 
+.music-controls {
+    position       : fixed;
+    bottom         : 1.25rem;
+    left           : 50%;
+    transform      : translateX(-50%);
+    z-index        : 9000;
+    display        : flex;
+    align-items    : center;
+    gap            : 0.65rem;
+    padding        : 0.45rem 0.85rem 0.45rem 0.55rem;
+    background     : rgba(13, 27, 42, 0.88);
+    border         : 1px solid rgba(201, 168, 76, 0.28);
+    border-radius  : 999px;
+    box-shadow     : 0 6px 24px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    max-width      : calc(100vw - 2rem);
+}
+
+.music-controls[hidden] {
+    display: none;
+}
+
+.music-controls__btn {
+    display        : flex;
+    align-items    : center;
+    justify-content: center;
+    width          : 32px;
+    height         : 32px;
+    padding        : 0;
+    border         : none;
+    border-radius  : 50%;
+    background     : rgba(201, 168, 76, 0.15);
+    color          : var(--gold-light);
+    cursor         : pointer;
+    flex-shrink    : 0;
+    transition     : background 0.2s ease, color 0.2s ease;
+}
+
+.music-controls__btn:hover {
+    background: rgba(201, 168, 76, 0.28);
+    color     : var(--gold-pale);
+}
+
+.music-controls__btn:focus-visible {
+    outline       : 2px solid var(--gold);
+    outline-offset: 2px;
+}
+
+.music-controls__icon {
+    width : 16px;
+    height: 16px;
+}
+
+.music-controls__volume {
+    display    : flex;
+    align-items: center;
+    gap        : 0.45rem;
+    min-width  : 0;
+}
+
+.music-controls__icon--vol {
+    width      : 15px;
+    height     : 15px;
+    flex-shrink: 0;
+    color      : var(--gold);
+    opacity    : 0.85;
+}
+
+.music-controls__slider {
+    width          : min(28vw, 120px);
+    height         : 4px;
+    margin         : 0;
+    accent-color   : var(--gold);
+    cursor         : pointer;
+    background     : transparent;
+}
+
+.music-controls__slider::-webkit-slider-runnable-track {
+    height       : 4px;
+    border-radius: 2px;
+    background   : rgba(201, 168, 76, 0.25);
+}
+
+.music-controls__slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width             : 12px;
+    height            : 12px;
+    margin-top        : -4px;
+    border-radius     : 50%;
+    background        : var(--gold-light);
+    border            : none;
+    box-shadow        : 0 1px 4px rgba(0, 0, 0, 0.35);
+}
+
+.music-controls__slider::-moz-range-track {
+    height       : 4px;
+    border-radius: 2px;
+    background   : rgba(201, 168, 76, 0.25);
+}
+
+.music-controls__slider::-moz-range-thumb {
+    width        : 12px;
+    height       : 12px;
+    border-radius: 50%;
+    background   : var(--gold-light);
+    border       : none;
+}
+
+.music-controls.is-paused .music-controls__icon--pause {
+    display: none;
+}
+
+.music-controls.is-paused .music-controls__icon--play {
+    display: block;
+}
+
+.music-controls:not(.is-paused) .music-controls__icon--play {
+    display: none;
+}
+
+@media (max-width: 480px) {
+    .music-controls {
+        bottom: max(1rem, env(safe-area-inset-bottom));
+        padding: 0.4rem 0.7rem 0.4rem 0.5rem;
+        gap    : 0.5rem;
+    }
+
+    .music-controls__slider {
+        width: min(36vw, 100px);
+    }
+}
+
 /* ═══════════════════════════════════════════
    ENVELOPE INTRO — estilo floral vintage
 ═══════════════════════════════════════════ */

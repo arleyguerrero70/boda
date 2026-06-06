@@ -529,6 +529,25 @@
 
     <audio id="bg-audio" class="bg-audio" preload="auto" aria-hidden="true"></audio>
 
+    <div id="music-controls" class="music-controls" hidden>
+        <button type="button" class="music-controls__btn" id="music-toggle" aria-label="Pausar música">
+            <svg class="music-controls__icon music-controls__icon--pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <rect x="6" y="5" width="4" height="14" rx="1"/>
+                <rect x="14" y="5" width="4" height="14" rx="1"/>
+            </svg>
+            <svg class="music-controls__icon music-controls__icon--play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" hidden>
+                <path d="M8 5.5v13l11-6.5L8 5.5z"/>
+            </svg>
+        </button>
+        <label class="music-controls__volume" for="music-volume">
+            <svg class="music-controls__icon music-controls__icon--vol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+                <path d="M11 5L6 9H3v6h3l5 4V5z"/>
+                <path d="M15.5 8.5a5 5 0 010 7"/>
+            </svg>
+            <input type="range" id="music-volume" class="music-controls__slider" min="0" max="100" value="85" aria-label="Volumen de la música">
+        </label>
+    </div>
+
     <script src="js/envelope.js"></script>
     <script src="js/script.js"></script>
 </body>
