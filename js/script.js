@@ -1,5 +1,5 @@
 const CONFIG = {
-    weddingDate: new Date('2026-08-07T16:00:00'),   // ⚠️ Cambia la hora (T16:00:00 = 4PM)
+    weddingDate: new Date('2026-08-07T14:30:00'),   // ⚠️ Cambia la hora (T16:00:00 = 4PM)
     vipKey: 'recepcion2026',                         // ⚠️ Cambia esta clave a algo secreto
     whatsappNumber: '573123587284',                  // ⚠️ Ej: 573001234567
 
@@ -19,6 +19,15 @@ const CONFIG = {
             whatsapp:  'entry.REEMPLAZA',            // ⚠️ entry ID del campo WhatsApp
             message:   'entry.REEMPLAZA',            // ⚠️ entry ID del campo Mensaje
         }
+    },
+
+    ceremony: {
+        title      : 'Boda Juan Andres & Juliana — Ceremonia',
+        start      : '2026-08-07T14:30:00',
+        end        : '2026-08-07T16:00:00',
+        location   : 'Parroquia Nuestra Señora de La Peña, Bogotá, Colombia',
+        description: 'Ceremonia religiosa de la boda de Juan Andres y Juliana.',
+        mapsUrl    : 'https://share.google/9GTFovjgIm96LINzW'
     }
 };
 
@@ -73,6 +82,112 @@ const observer = new IntersectionObserver(entries => {
 }, { threshold: 0.12 });
 
 document.querySelectorAll('.animate').forEach(el => observer.observe(el));
+
+/* ═══════════════════════════════════════════════════════════════
+   CITA MÁGICA — Nuestra historia
+═══════════════════════════════════════════════════════════════ */
+(function initMagicInk() {
+    const quote = document.getElementById('magic-quote');
+    const sign  = document.getElementById('magic-sign');
+    if (!quote) return;
+
+    const line1 = quote.dataset.line1 || '';
+    const line2 = quote.dataset.line2 || '';
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const charDelay = 75;
+
+    function buildLine(text, startIndex) {
+        const line = document.createElement('span');
+        line.className = 'magic-ink__line';
+
+        [...text].forEach((char, i) => {
+            const span = document.createElement('span');
+            const isSpace = char === ' ';
+            span.className = 'magic-ink__char' + (isSpace ? ' magic-ink__char--space' : '');
+            span.style.setProperty('--char-i', startIndex + i);
+            span.textContent = isSpace ? '\u00A0' : char;
+            span.setAttribute('aria-hidden', 'true');
+            line.appendChild(span);
+        });
+
+        return line;
+    }
+
+    function renderStatic() {
+        quote.textContent = `${line1} ${line2}`;
+        if (sign) sign.classList.add('is-visible');
+    }
+
+    function startWriting() {
+        if (quote.classList.contains('magic-ink--writing')) return;
+
+        if (prefersReduced) {
+            renderStatic();
+            return;
+        }
+
+        quote.textContent = '';
+        quote.appendChild(buildLine(line1, 0));
+        quote.appendChild(buildLine(line2, line1.length));
+
+        quote.classList.add('magic-ink--writing');
+
+        const totalMs = (line1.length + line2.length) * charDelay + 900;
+        setTimeout(() => {
+            if (sign) sign.classList.add('is-visible');
+        }, totalMs);
+    }
+
+    const inkObserver = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                startWriting();
+                inkObserver.disconnect();
+            }
+        });
+    }, {
+        root      : null,
+        // Solo cuenta cuando la cita cruza la franja central del viewport
+        rootMargin: '-38% 0px -38% 0px',
+        threshold : 0.35
+    });
+
+    inkObserver.observe(quote);
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   AGREGAR AL CALENDARIO — Ceremonia
+═══════════════════════════════════════════════════════════════ */
+(function initCalendarButton() {
+    const link = document.getElementById('btn-add-calendar');
+    if (!link || !CONFIG.ceremony) return;
+
+    function toCalendarDate(isoLocal) {
+        const [date, time] = isoLocal.split('T');
+        const [y, m, d] = date.split('-');
+        const [hh, mm] = time.split(':');
+        return `${y}${m}${d}T${hh}${mm}00`;
+    }
+
+    function buildGoogleCalendarUrl(event) {
+        const details = event.mapsUrl
+            ? `${event.description}\n${event.mapsUrl}`
+            : event.description;
+
+        const params = new URLSearchParams({
+            action  : 'TEMPLATE',
+            text    : event.title,
+            dates   : `${toCalendarDate(event.start)}/${toCalendarDate(event.end)}`,
+            details : details,
+            location: event.location,
+            ctz     : 'America/Bogota'
+        });
+
+        return `https://calendar.google.com/calendar/render?${params.toString()}`;
+    }
+
+    link.href = buildGoogleCalendarUrl(CONFIG.ceremony);
+})();
 
 /* ═══════════════════════════════════════════════════════════════
    RSVP FORM
