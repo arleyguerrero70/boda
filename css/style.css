@@ -72,7 +72,7 @@ body.envelope-locked {
     bottom         : 1.25rem;
     left           : 50%;
     transform      : translateX(-50%);
-    z-index        : 9000;
+    z-index        : 10001;
     display        : flex;
     align-items    : center;
     gap            : 0.65rem;
@@ -122,58 +122,68 @@ body.envelope-locked {
 }
 
 .music-controls__volume {
-    display    : flex;
-    align-items: center;
-    gap        : 0.45rem;
-    min-width  : 0;
+    display        : flex;
+    align-items    : center;
+    gap            : 0.45rem;
+    min-width      : 0;
+    flex           : 1;
+    pointer-events : auto;
 }
 
 .music-controls__icon--vol {
-    width      : 15px;
-    height     : 15px;
-    flex-shrink: 0;
-    color      : var(--gold);
-    opacity    : 0.85;
+    width         : 15px;
+    height        : 15px;
+    flex-shrink   : 0;
+    color         : var(--gold);
+    opacity       : 0.85;
+    pointer-events: none;
 }
 
 .music-controls__slider {
-    width          : min(28vw, 120px);
-    height         : 4px;
-    margin         : 0;
-    accent-color   : var(--gold);
-    cursor         : pointer;
-    background     : transparent;
+    -webkit-appearance: none;
+    appearance        : none;
+    width             : min(28vw, 120px);
+    min-width         : 80px;
+    height            : 28px;
+    margin            : 0;
+    padding           : 0;
+    cursor            : pointer;
+    background        : transparent;
+    pointer-events    : auto;
+    touch-action      : none;
 }
 
 .music-controls__slider::-webkit-slider-runnable-track {
     height       : 4px;
     border-radius: 2px;
-    background   : rgba(201, 168, 76, 0.25);
+    background   : rgba(201, 168, 76, 0.35);
 }
 
 .music-controls__slider::-webkit-slider-thumb {
     -webkit-appearance: none;
-    width             : 12px;
-    height            : 12px;
-    margin-top        : -4px;
+    width             : 14px;
+    height            : 14px;
+    margin-top        : -5px;
     border-radius     : 50%;
     background        : var(--gold-light);
     border            : none;
     box-shadow        : 0 1px 4px rgba(0, 0, 0, 0.35);
+    cursor            : pointer;
 }
 
 .music-controls__slider::-moz-range-track {
     height       : 4px;
     border-radius: 2px;
-    background   : rgba(201, 168, 76, 0.25);
+    background   : rgba(201, 168, 76, 0.35);
 }
 
 .music-controls__slider::-moz-range-thumb {
-    width        : 12px;
-    height       : 12px;
+    width        : 14px;
+    height       : 14px;
     border-radius: 50%;
     background   : var(--gold-light);
     border       : none;
+    cursor       : pointer;
 }
 
 .music-controls.is-paused .music-controls__icon--pause {

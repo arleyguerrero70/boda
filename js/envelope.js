@@ -79,14 +79,19 @@
         }
     }
 
+    function setVolume() {
+        if (!audioEl || !volumeEl) return;
+        audioEl.volume = Math.min(1, Math.max(0, Number(volumeEl.value) / 100));
+    }
+
     if (toggleBtn) {
         toggleBtn.addEventListener('click', togglePlayback);
     }
 
     if (volumeEl && audioEl) {
-        volumeEl.addEventListener('input', () => {
-            audioEl.volume = volumeEl.value / 100;
-        });
+        volumeEl.addEventListener('input', setVolume);
+        volumeEl.addEventListener('change', setVolume);
+        setVolume();
     }
 
     if (audioEl) {
