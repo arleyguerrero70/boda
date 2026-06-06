@@ -4,17 +4,46 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Invitación de boda — Juan Andres & Juliana & 7 de agosto de 2026">
-    <title>Juan Andres & Juliana — 7 · VIII · 2026</title>
+    <title>Juan Andres & Juliana — 7 · 8 · 2026</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playwrite+DE+Grund:wght@100..400&family=Playwrite+GB+J:ital,wght@0,100..400;1,100..400&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="envelope-locked">
 
-    <div class="site-shell">
+    <!-- ══════════════════════════════ SOBRE INTRO ══════════════════════════════ -->
+    <div id="envelope-intro" class="envelope-intro" role="dialog" aria-modal="true" aria-label="Invitación de boda">
+        <div class="envelope-intro__backdrop"></div>
+        <div class="envelope-scene">
+            <button type="button" class="envelope" id="envelope-open" aria-label="Abrir invitación">
+                <div class="envelope__body envelope-card">
+                    <div class="envelope__card" aria-hidden="true">
+                        <p class="envelope__initials envelope__initials--inner">J &amp; A</p>
+                        <p class="envelope__date">7 de agosto de 2026</p>
+                    </div>
+
+                    <div class="envelope__front">
+                        <div class="envelope__content">
+                            <p class="envelope__initials">Juan Andres & Juliana</p>
+                            <p class="envelope__reserved">Queremos que hagas parte un día especial</p>
+                            <div class="envelope__divider"></div>
+                            <p class="envelope__guest" id="envelope-guest">Estás invitado a nuestra boda</p>
+                        </div>
+                    </div>
+
+                    <div class="envelope-card__flap" aria-hidden="true">
+                        <div class="envelope-card__flap-face" aria-hidden="true"></div>
+                    </div>
+                </div>
+            </button>
+            <p class="envelope-hint" id="envelope-hint">Toca la invitación</p>
+        </div>
+    </div>
+
+    <div class="site-shell" id="site-shell" aria-hidden="true">
 
     <!-- ══════════════════════════════ HERO ══════════════════════════════ -->
     <section id="hero">
@@ -498,6 +527,7 @@
 
     </div><!-- .site-shell -->
 
+    <script src="js/envelope.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>
