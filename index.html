@@ -19,27 +19,39 @@
         <div class="envelope-intro__backdrop"></div>
         <div class="envelope-scene">
             <button type="button" class="envelope" id="envelope-open" aria-label="Abrir invitación">
-                <div class="envelope__body envelope-card">
-                    <div class="envelope__card" aria-hidden="true">
-                        <p class="envelope__initials envelope__initials--inner">J &amp; A</p>
-                        <p class="envelope__date">7 de agosto de 2026</p>
+                <div class="envelope__shell">
+                    <picture class="envelope__media">
+                        <img
+                            class="envelope__img"
+                            src="img/card/noOpen.avif"
+                            alt=""
+                            width="800"
+                            height="1200"
+                            decoding="async"
+                            fetchpriority="high"
+                        >
+                    </picture>
+
+                    <div class="envelope__copy">
+                        <p class="envelope__monogram">J &amp; A</p>
+                        <p class="envelope__label">Pase reservado:</p>
+                        <p class="envelope__guest" id="envelope-guest">Estás invitado</p>
+                        <p class="envelope__party" id="envelope-party" hidden></p>
                     </div>
 
-                    <div class="envelope__front">
-                        <div class="envelope__content">
-                            <p class="envelope__initials">Juan Andres & Juliana</p>
-                            <p class="envelope__reserved">Te queremos que hagas parte un día especial</p>
-                            <div class="envelope__divider"></div>
-                            <p class="envelope__guest" id="envelope-guest">Estás invitado a nuestra boda</p>
-                        </div>
-                    </div>
-
-                    <div class="envelope-card__flap" aria-hidden="true">
-                        <div class="envelope-card__flap-face" aria-hidden="true"></div>
+                    <div class="envelope__flap" aria-hidden="true">
+                        <img
+                            class="envelope__img envelope__img--flap"
+                            src="img/card/noOpen.avif"
+                            alt=""
+                            width="800"
+                            height="1200"
+                            decoding="async"
+                        >
                     </div>
                 </div>
             </button>
-            <p class="envelope-hint" id="envelope-hint">Toca la invitación</p>
+            <p class="envelope-hint" id="envelope-hint">Toca el sobre para abrir</p>
         </div>
     </div>
 

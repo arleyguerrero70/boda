@@ -8,6 +8,7 @@
     const hint       = document.getElementById('envelope-hint');
     const siteShell  = document.getElementById('site-shell');
     const guestEl    = document.getElementById('envelope-guest');
+    const partyEl    = document.getElementById('envelope-party');
     const audioEl    = document.getElementById('bg-audio');
     const controlsEl = document.getElementById('music-controls');
     const toggleBtn  = document.getElementById('music-toggle');
@@ -17,8 +18,18 @@
 
     const params = new URLSearchParams(window.location.search);
     const guestName = params.get('invitado') || params.get('guest');
+    const personas  = params.get('personas');
+
     if (guestName && guestEl) {
         guestEl.textContent = decodeURIComponent(guestName.replace(/\+/g, ' '));
+    }
+
+    if (personas && partyEl) {
+        const n = parseInt(personas, 10);
+        if (!Number.isNaN(n) && n > 0) {
+            partyEl.textContent = n === 1 ? '1 persona' : `${n} personas`;
+            partyEl.hidden = false;
+        }
     }
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -105,8 +116,8 @@
             return;
         }
 
-        setTimeout(() => intro.classList.add('envelope-intro--revealing'), 1100);
-        setTimeout(revealSite, 1900);
+        setTimeout(() => intro.classList.add('envelope-intro--revealing'), 1200);
+        setTimeout(revealSite, 2100);
     }
 
     envelope.addEventListener('click', openEnvelope);
