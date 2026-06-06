@@ -1,9 +1,14 @@
 (function () {
+    const MUSIC = {
+        src: 'audio/ed-sheeran-thinking-out-loud.mp3'
+    };
+
     const intro     = document.getElementById('envelope-intro');
     const envelope  = document.getElementById('envelope-open');
     const hint      = document.getElementById('envelope-hint');
     const siteShell = document.getElementById('site-shell');
     const guestEl   = document.getElementById('envelope-guest');
+    const audioEl   = document.getElementById('bg-audio');
 
     if (!intro || !envelope) return;
 
@@ -15,6 +20,26 @@
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+    if (audioEl) {
+        audioEl.src = MUSIC.src;
+        audioEl.loop = true;
+        audioEl.volume = 0.85;
+    }
+
+    function playMusic() {
+        if (!audioEl) return;
+
+        const playAttempt = audioEl.play();
+        if (playAttempt?.catch) {
+            playAttempt.catch(() => {
+                // El navegador bloqueó el audio; el clic del usuario ya ocurrió,
+                // así que un segundo intento suele funcionar tras cargar el archivo.
+                audioEl.load();
+                audioEl.play().catch(() => {});
+            });
+        }
+    }
+
     function revealSite() {
         document.body.classList.remove('envelope-locked');
         intro.classList.add('envelope-intro--done');
@@ -25,6 +50,8 @@
 
     function openEnvelope() {
         if (intro.classList.contains('envelope-intro--opening')) return;
+
+        playMusic();
 
         envelope.disabled = true;
         intro.classList.add('envelope-intro--opening');
