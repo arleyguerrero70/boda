@@ -35,7 +35,7 @@
     --font-sans : 'Playwrite DE Grund', cursive;
 
     --transition: 0.4s ease;
-    --site-max  : 1280px;
+    --site-max  : 768px;
     --max-width : 1200px;
 }
 
