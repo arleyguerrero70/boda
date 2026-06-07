@@ -91,10 +91,16 @@ document.querySelectorAll('.animate').forEach(el => observer.observe(el));
     const sign  = document.getElementById('magic-sign');
     if (!quote) return;
 
-    const line1 = quote.dataset.line1 || '';
-    const line2 = quote.dataset.line2 || '';
+    const lines = [];
+    for (let i = 1; quote.dataset[`line${i}`] !== undefined; i++) {
+        const text = quote.dataset[`line${i}`];
+        if (text) lines.push(text);
+    }
+    if (!lines.length) return;
+
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const charDelay = 75;
+    const totalChars = () => lines.reduce((sum, line) => sum + line.length, 0);
 
     function buildLine(text, startIndex) {
         const line = document.createElement('span');
@@ -114,7 +120,11 @@ document.querySelectorAll('.animate').forEach(el => observer.observe(el));
     }
 
     function renderStatic() {
-        quote.textContent = `${line1} ${line2}`;
+        quote.textContent = '';
+        lines.forEach((text, i) => {
+            if (i > 0) quote.appendChild(document.createElement('br'));
+            quote.appendChild(document.createTextNode(text));
+        });
         if (sign) sign.classList.add('is-visible');
     }
 
@@ -127,12 +137,15 @@ document.querySelectorAll('.animate').forEach(el => observer.observe(el));
         }
 
         quote.textContent = '';
-        quote.appendChild(buildLine(line1, 0));
-        quote.appendChild(buildLine(line2, line1.length));
+        let charIndex = 0;
+        lines.forEach(line => {
+            quote.appendChild(buildLine(line, charIndex));
+            charIndex += line.length;
+        });
 
         quote.classList.add('magic-ink--writing');
 
-        const totalMs = (line1.length + line2.length) * charDelay + 900;
+        const totalMs = totalChars() * charDelay + 900;
         setTimeout(() => {
             if (sign) sign.classList.add('is-visible');
         }, totalMs);
