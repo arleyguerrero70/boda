@@ -1,24 +1,11 @@
 const CONFIG = {
     weddingDate: new Date('2026-08-07T14:30:00'),   // ⚠️ Cambia la hora (T16:00:00 = 4PM)
-    whatsappNumber: '573123587284',                  // ⚠️ Ej: 573001234567
 
-    // ── Google Forms — Cómo obtener estos valores:
-    //    1. Crea tu formulario en forms.google.com
-    //    2. En el formulario publicado, clic derecho → "Ver código fuente"
-    //    3. Busca: action="https://docs.google.com/forms/d/e/XXXX/formResponse"
-    //    4. Copia ese ID (XXXX) en formId
-    //    5. Busca cada "entry.XXXXXXXXX" junto a cada campo de tu form
+    // ── Google Apps Script — verificación de duplicados + envío
+    //    1. Sigue las instrucciones en google-apps-script/Code.gs
+    //    2. Despliega la app web y pega aquí la URL /exec
     // ─────────────────────────────────────────────────────────
-    googleForms: {
-        formId: 'REEMPLAZA_CON_TU_FORM_ID',          // ⚠️ ID del form de Google
-        entries: {
-            name:      'entry.REEMPLAZA',            // ⚠️ entry ID del campo Nombre
-            attending: 'entry.REEMPLAZA',            // ⚠️ entry ID del campo Asistencia
-            guests:    'entry.REEMPLAZA',            // ⚠️ entry ID del campo Acompañantes
-            whatsapp:  'entry.REEMPLAZA',            // ⚠️ entry ID del campo WhatsApp
-            message:   'entry.REEMPLAZA',            // ⚠️ entry ID del campo Mensaje
-        }
-    },
+    rsvpApiUrl: 'https://script.google.com/macros/s/AKfycbw59b3iNePXdYZFff3mnTwtCo-iceAT2YH-ebLCxWtR1CJDrQPZ68rn557EW0doF5-h/exec',
 
     ceremony: {
         title      : 'Boda Juan Andres & Juliana — Ceremonia',
@@ -46,15 +33,21 @@ const CONFIG = {
 /* ═══════════════════════════════════════════════════════════════
    DETECCIÓN VIP
 ═══════════════════════════════════════════════════════════════ */
-let isVIP = false;
+let guestName = '';
 
-window.VipGuest?.ready.then(invitado => {
+window.VipGuest?.ready.then(async invitado => {
     if (!invitado) return;
 
-    isVIP = true;
+    guestName = invitado.nombre?.trim() || '';
     document.body.classList.add('vip-active');
-    setWhatsAppBtn('');
     window.VipGuest.populateGuestsSelect(invitado.cantidad);
+
+    if (guestName && isRsvpApiConfigured()) {
+        try {
+            const already = await checkRsvpAlreadySubmitted(guestName);
+            if (already) showRsvpAlreadyAnswered();
+        } catch (_) {}
+    }
 });
 
 /* ═══════════════════════════════════════════════════════════════
@@ -281,65 +274,96 @@ const btnText    = document.getElementById('btn-text');
 const btnLoading = document.getElementById('btn-loading');
 const submitBtn  = document.getElementById('submit-btn');
 const successDiv = document.getElementById('rsvp-success');
+const alreadyDiv = document.getElementById('rsvp-already');
 const successMsg = document.getElementById('success-message');
 
-// Mostrar/ocultar campo de acompañantes según respuesta
-document.querySelectorAll('input[name="attending"]').forEach(radio => {
-    radio.addEventListener('change', () => {
-        const guestsField = document.getElementById('guests-field');
-        guestsField.style.display = radio.value === 'Sí, asistiré' ? 'flex' : 'none';
-    });
-});
+function isRsvpApiConfigured() {
+    const url = CONFIG.rsvpApiUrl;
+    return url && !url.includes('REEMPLAZA');
+}
 
-form.addEventListener('submit', async e => {
-    e.preventDefault();
-
-    const name      = document.getElementById('name').value.trim();
-    const attending = form.querySelector('input[name="attending"]:checked')?.value || '';
-    const guests    = document.getElementById('guests').value;
-    const whatsapp  = document.getElementById('whatsapp').value.trim();
-    const message   = document.getElementById('message').value.trim();
-
-    // Validación básica
-    formError.style.display = 'none';
-    if (!name) return showError('Por favor ingresa tu nombre completo.');
-    if (!attending) return showError('Por favor indica si asistirás.');
-    if (!whatsapp) return showError('Por favor ingresa tu número de WhatsApp.');
-
-    // Estado de carga
-    setBusy(true);
-
-    // Enviar a Google Forms
-    try {
-        await submitToGoogleForms({ name, attending, guests, whatsapp, message });
-    } catch (_) {
-        // no-cors siempre "falla" en fetch, pero los datos llegan igual
-    }
-
-    setBusy(false);
-
-    // Mostrar éxito
+function showRsvpSuccess(name) {
     form.style.display = 'none';
+    if (alreadyDiv) alreadyDiv.style.display = 'none';
     successDiv.style.display = 'block';
+    successMsg.textContent =
+        `¡Gracias, ${name}! Estamos muy emocionados de celebrar contigo este día especial.`;
+}
 
-    if (isVIP) {
-        // VIP: Personalizar el mensaje de éxito y redirigir a WhatsApp
-        successMsg.textContent =
-            `¡Gracias, ${name}! En unos momentos te escribiremos por WhatsApp con los detalles de la recepción.`;
+function showRsvpAlreadyAnswered() {
+    form.style.display = 'none';
+    successDiv.style.display = 'none';
+    formError.style.display = 'none';
+    if (alreadyDiv) alreadyDiv.style.display = 'block';
+}
 
-        // Actualizar el botón de WhatsApp en la sección de recepción con el nombre del invitado
-        setWhatsAppBtn(name);
+async function rsvpApiRequest(payload) {
+    // text/plain evita el preflight CORS que bloquea application/json
+    const res = await fetch(CONFIG.rsvpApiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error('api failed');
+    return res.json();
+}
 
-        // Abrir WhatsApp automáticamente tras 2 segundos
-        setTimeout(() => {
-            openWhatsApp(name);
-        }, 2000);
+async function checkRsvpAlreadySubmitted(name) {
+    const data = await rsvpApiRequest({ action: 'check', name });
+    return data.alreadySubmitted === true;
+}
 
-    } else {
-        successMsg.textContent =
-            `¡Gracias, ${name}! Estamos muy emocionados de celebrar contigo este día especial.`;
-    }
-});
+async function submitRsvp(data) {
+    return rsvpApiRequest({ action: 'submit', ...data });
+}
+
+if (form) {
+    // Mostrar/ocultar campo de acompañantes según respuesta
+    document.querySelectorAll('input[name="attending"]').forEach(radio => {
+        radio.addEventListener('change', () => {
+            const guestsField = document.getElementById('guests-field');
+            guestsField.style.display = radio.value === 'Sí, asistiré' ? 'flex' : 'none';
+        });
+    });
+
+    form.addEventListener('submit', async e => {
+        e.preventDefault();
+
+        const name      = guestName || window.VipGuest?.getInvitado()?.nombre?.trim() || '';
+        const attending = form.querySelector('input[name="attending"]:checked')?.value || '';
+        const guests    = document.getElementById('guests').value;
+        const message   = document.getElementById('message').value.trim();
+
+        formError.style.display = 'none';
+        if (!name) return showError('No pudimos identificar tu invitación. Usa el enlace personal que te enviamos.');
+        if (!attending) return showError('Por favor indica si asistirás.');
+        if (!isRsvpApiConfigured()) {
+            return showError('El formulario aún no está configurado. Contacta a los novios.');
+        }
+
+        setBusy(true);
+
+        try {
+            const result = await submitRsvp({ name, attending, guests, message });
+
+            if (result.alreadySubmitted) {
+                showRsvpAlreadyAnswered();
+                return;
+            }
+
+            if (!result.ok) {
+                showError('No se pudo enviar tu confirmación. Intenta de nuevo.');
+                return;
+            }
+
+            showRsvpSuccess(name);
+        } catch (_) {
+            showError('No se pudo conectar con el servidor. Intenta de nuevo.');
+        } finally {
+            setBusy(false);
+        }
+    });
+}
 
 function showError(msg) {
     formError.textContent = msg;
@@ -351,51 +375,4 @@ function setBusy(busy) {
     submitBtn.disabled = busy;
     btnText.style.display    = busy ? 'none'   : 'inline';
     btnLoading.style.display = busy ? 'inline' : 'none';
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   GOOGLE FORMS — ENVÍO
-═══════════════════════════════════════════════════════════════ */
-async function submitToGoogleForms(data) {
-    const { formId, entries } = CONFIG.googleForms;
-
-    // Si el form aún no está configurado, lo ignoramos silenciosamente
-    if (formId === 'REEMPLAZA_CON_TU_FORM_ID') return;
-
-    const url = `https://docs.google.com/forms/d/e/${formId}/formResponse`;
-    const body = new URLSearchParams();
-    body.append(entries.name,      data.name);
-    body.append(entries.attending, data.attending);
-    body.append(entries.guests,    data.guests);
-    body.append(entries.whatsapp,  data.whatsapp);
-    if (data.message) body.append(entries.message, data.message);
-
-    // mode: 'no-cors' no devuelve respuesta legible pero sí envía los datos
-    await fetch(url, { method: 'POST', mode: 'no-cors', body });
-}
-
-/* ═══════════════════════════════════════════════════════════════
-   WHATSAPP
-═══════════════════════════════════════════════════════════════ */
-function buildWhatsAppMessage(name) {
-    const text = name
-        ? `¡Hola! Soy ${name}. Me confirmé para la boda de Juliana y Juan el 7 de agosto 🎉 Quisiera recibir los detalles de la recepción.`
-        : `¡Hola! Me confirmé para la boda de Juliana y Juan el 7 de agosto 🎉 Quisiera recibir los detalles de la recepción.`;
-    return encodeURIComponent(text);
-}
-
-function openWhatsApp(name) {
-    const number = CONFIG.whatsappNumber.replace(/\D/g, '');
-    window.open(`https://wa.me/${number}?text=${buildWhatsAppMessage(name)}`, '_blank');
-}
-
-function setWhatsAppBtn(name) {
-    const btn = document.getElementById('whatsapp-btn');
-    if (!btn) return;
-    const number = CONFIG.whatsappNumber.replace(/\D/g, '');
-    btn.href = `https://wa.me/${number}?text=${buildWhatsAppMessage(name)}`;
-    btn.onclick = e => {
-        e.preventDefault();
-        openWhatsApp(document.getElementById('name')?.value.trim() || name);
-    };
 }

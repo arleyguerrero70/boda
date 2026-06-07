@@ -71,7 +71,13 @@
 
     function setVolume() {
         if (!audioEl || !volumeEl) return;
-        audioEl.volume = Math.min(1, Math.max(0, Number(volumeEl.value) / 100));
+
+        const pct = Math.min(100, Math.max(0, Number(volumeEl.value) || 0));
+        const vol = pct / 100;
+
+        audioEl.volume = vol;
+        audioEl.muted = vol === 0;
+        volumeEl.style.setProperty('--volume', `${pct}%`);
     }
 
     if (toggleBtn) {
@@ -79,8 +85,9 @@
     }
 
     if (volumeEl && audioEl) {
-        volumeEl.addEventListener('input', setVolume);
-        volumeEl.addEventListener('change', setVolume);
+        ['input', 'change', 'pointerup'].forEach(eventName => {
+            volumeEl.addEventListener(eventName, setVolume);
+        });
         setVolume();
     }
 

@@ -454,91 +454,8 @@
         </div>
     </section>
 
-    <!-- ══════════════════════════════ RSVP ══════════════════════════════ -->
-    <section id="rsvp" class="bg-dark vip-only">
-        <div class="container container-narrow">
-            <div class="section-header animate">
-                <h2 class="section-title">Confirma tu Asistencia</h2>
-                <div class="divider">
-                    <svg viewBox="0 0 320 24" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
-                        <line x1="0" y1="12" x2="120" y2="12" stroke="currentColor" stroke-width="0.5"/>
-                        <polygon points="132,12 140,6 148,12 140,18" fill="currentColor"/>
-                        <circle cx="160" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="0.8"/>
-                        <polygon points="172,12 180,6 188,12 180,18" fill="currentColor"/>
-                        <line x1="200" y1="12" x2="320" y2="12" stroke="currentColor" stroke-width="0.5"/>
-                    </svg>
-                </div>
-            </div>
-
-            <!-- ══════════════════════════════ AVISOS ══════════════════════════════ -->
-            <section id="avisos" class="avisos" aria-label="Avisos importantes">
-                <div class="container container-narrow info-notice__stack">
-                    <div id="no-ninos" class="info-notice__box info-notice__box--rose animate">
-                        <p class="info-notice__text">
-                            <strong class="info-notice__label">No niños:</strong>
-                            Amamos a sus pequeños pero queremos que en este día solo tengas que preocuparte por pasarla increíble.
-                        </p>
-                    </div>
-                    <div id="confirmacion-plazo" class="info-notice__box info-notice__box--green animate">
-                        <p class="info-notice__text">
-                            <strong class="info-notice__label">Confirmación:</strong>
-                            antes del 20 de julio
-                        </p>
-                    </div>
-                </div>
-            </section>
-
-            <form id="rsvp-form" class="rsvp-form animate" novalidate>
-                <div class="field-group">
-                    <label>¿Asistirás? *</label>
-                    <div class="radio-row">
-                        <label class="radio-opt">
-                            <input type="radio" name="attending" value="Sí, asistiré" required>
-                            <span class="radio-box"></span>
-                            <span>Sí, con mucho gusto</span>
-                        </label>
-                        <label class="radio-opt">
-                            <input type="radio" name="attending" value="No podré asistir">
-                            <span class="radio-box"></span>
-                            <span>No podré asistir</span>
-                        </label>
-                    </div>
-                </div>
-
-                <div class="field-group" id="guests-field">
-                    <label for="guests">Numero de asistentes</label>
-                    <select id="guests" name="guests">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                </div>
-
-                <div class="field-group">
-                    <label for="message">Mensaje para los novios <span class="optional">(opcional)</span></label>
-                    <textarea id="message" name="message" rows="3" placeholder="Escríbeles algo especial..."></textarea>
-                </div>
-
-                <p class="form-error" id="form-error" style="display:none"></p>
-
-                <button type="submit" class="btn-primary" id="submit-btn">
-                    <span id="btn-text">Confirmar Asistencia</span>
-                    <span id="btn-loading" style="display:none">Enviando...</span>
-                </button>
-            </form>
-
-            <div id="rsvp-success" class="rsvp-success" style="display:none">
-                <div class="success-check">✓</div>
-                <h3>¡Gracias por confirmar!</h3>
-                <p id="success-message">Estamos muy emocionados de celebrar contigo este día especial.</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- ══════════════════════════════ RECEPTION (VIP ONLY) ══════════════════════════════ -->
-    <section id="reception" class="bg-reception vip-only">
+     <!-- ══════════════════════════════ RECEPTION (VIP ONLY) ══════════════════════════════ -->
+     <section id="reception" class="bg-reception vip-only">
         <div class="container">
             <div class="section-header animate">
                 <h2 class="section-title">La Gran Celebración</h2>
@@ -624,6 +541,97 @@
         </div>
     </section>
 
+    <!-- ══════════════════════════════ RSVP ══════════════════════════════ -->
+    <section id="rsvp" class="bg-dark vip-only">
+        <div class="container container-narrow">
+            <div class="section-header animate">
+                <h2 class="section-title">Confirma tu Asistencia</h2>
+                <div class="divider">
+                    <svg viewBox="0 0 320 24" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                        <line x1="0" y1="12" x2="120" y2="12" stroke="currentColor" stroke-width="0.5"/>
+                        <polygon points="132,12 140,6 148,12 140,18" fill="currentColor"/>
+                        <circle cx="160" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="0.8"/>
+                        <polygon points="172,12 180,6 188,12 180,18" fill="currentColor"/>
+                        <line x1="200" y1="12" x2="320" y2="12" stroke="currentColor" stroke-width="0.5"/>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- ══════════════════════════════ AVISOS ══════════════════════════════ -->
+            <section id="avisos" class="avisos" aria-label="Avisos importantes">
+                <div class="container container-narrow info-notice__stack">
+                    <div id="no-ninos" class="info-notice__box info-notice__box--rose animate">
+                        <p class="info-notice__text">
+                            <strong class="info-notice__label">No niños:</strong>
+                            Amamos a sus pequeños pero queremos que en este día solo tengas que preocuparte por pasarla increíble.
+                        </p>
+                    </div>
+                    <div id="confirmacion-plazo" class="info-notice__box info-notice__box--green animate">
+                        <p class="info-notice__text">
+                            <strong class="info-notice__label">Confirmación:</strong>
+                            antes del 20 de julio
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <form id="rsvp-form" class="rsvp-form animate" novalidate>
+                <div class="field-group">
+                    <label>¿Asistirás? *</label>
+                    <div class="radio-row">
+                        <label class="radio-opt">
+                            <input type="radio" name="attending" value="Sí, asistiré" required>
+                            <span class="radio-box"></span>
+                            <span>Sí, con mucho gusto</span>
+                        </label>
+                        <label class="radio-opt">
+                            <input type="radio" name="attending" value="No podré asistir">
+                            <span class="radio-box"></span>
+                            <span>No podré asistir</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="field-group" id="guests-field">
+                    <label for="guests">Numero de asistentes</label>
+                    <select id="guests" name="guests">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+
+                <div class="field-group">
+                    <label for="message">Mensaje para los novios <span class="optional">(opcional)</span></label>
+                    <textarea id="message" name="message" rows="3" placeholder="Escríbeles algo especial..."></textarea>
+                </div>
+
+                <p class="form-error" id="form-error" style="display:none"></p>
+
+                <button type="submit" class="btn-primary" id="submit-btn">
+                    <span id="btn-text">Confirmar Asistencia</span>
+                    <span id="btn-loading" style="display:none">Enviando...</span>
+                </button>
+            </form>
+
+            <div id="rsvp-success" class="rsvp-success" style="display:none">
+                <div class="success-check">✓</div>
+                <h3>¡Gracias por confirmar!</h3>
+                <p id="success-message">Estamos muy emocionados de celebrar contigo este día especial.</p>
+            </div>
+
+            <div id="rsvp-already" class="rsvp-success rsvp-already" style="display:none">
+                <div class="success-check">✓</div>
+                <h3>Ya confirmaste tu asistencia</h3>
+                <p>Ya has respondido este formulario. Si necesitas hacer un cambio, contáctanos directamente.</p>
+            </div>
+        </div>
+    </section>
+
+   
+
     <!-- ══════════════════════════════ FOOTER ══════════════════════════════ -->
     <footer class="site-footer">
         <div class="site-footer__media" aria-hidden="true">
@@ -662,13 +670,13 @@
                 <path d="M8 5.5v13l11-6.5L8 5.5z"/>
             </svg>
         </button>
-        <label class="music-controls__volume" for="music-volume">
+        <div class="music-controls__volume">
             <svg class="music-controls__icon music-controls__icon--vol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                 <path d="M11 5L6 9H3v6h3l5 4V5z"/>
                 <path d="M15.5 8.5a5 5 0 010 7"/>
             </svg>
-            <input type="range" id="music-volume" class="music-controls__slider" min="0" max="100" value="85" aria-label="Volumen de la música">
-        </label>
+            <input type="range" id="music-volume" class="music-controls__slider" min="0" max="100" step="1" value="85" aria-label="Volumen de la música">
+        </div>
     </div>
 
     <script src="js/vip-guest.js"></script>
