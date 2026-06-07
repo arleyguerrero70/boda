@@ -15,12 +15,12 @@
 
     if (!intro || !envelope) return;
 
-    const invitado = window.VipGuest?.findInvitadoFromUrl();
-    const guestName = invitado?.nombre || null;
-
-    if (guestName && guestEl) {
-        guestEl.textContent = guestName;
-    }
+    window.VipGuest?.ready.then(invitado => {
+        const guestName = invitado?.nombre || null;
+        if (guestName && guestEl) {
+            guestEl.textContent = guestName;
+        }
+    });
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const defaultVolume = 0.85;

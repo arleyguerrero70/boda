@@ -46,14 +46,16 @@ const CONFIG = {
 /* ═══════════════════════════════════════════════════════════════
    DETECCIÓN VIP
 ═══════════════════════════════════════════════════════════════ */
-const invitado = window.VipGuest?.findInvitadoFromUrl();
-const isVIP = Boolean(invitado);
+let isVIP = false;
 
-if (isVIP) {
+window.VipGuest?.ready.then(invitado => {
+    if (!invitado) return;
+
+    isVIP = true;
     document.body.classList.add('vip-active');
     setWhatsAppBtn('');
     window.VipGuest.populateGuestsSelect(invitado.cantidad);
-}
+});
 
 /* ═══════════════════════════════════════════════════════════════
    COUNTDOWN TIMER

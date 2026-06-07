@@ -1,12 +1,12 @@
 import { randomUUID } from 'crypto';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'fs';
+import { existsSync, mkdirSync, readdirSync, readFileSync, unlinkSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const source = join(root, 'invitados.md');
 const idsFile = join(root, 'data', 'invitados-uuids.json');
-const output = join(root, 'js', 'invitados-data.js');
+const guestsDir = join(root, 'data', 'guests');
 const urlsDoc = join(root, 'invitados-urls.md');
 
 const BASE_URL = (process.env.BODA_BASE_URL || 'index.html').replace(/\/$/, '');
@@ -75,12 +75,27 @@ for (const slug of Object.keys(uuidMap)) {
 
 saveUuidMap(uuidMap);
 
-const js = `/* Generado desde invitados.md — no editar a mano */
-/* Ejecuta: node scripts/generate-invitados.mjs */
-window.INVITADOS_DATA = ${JSON.stringify(invitados, null, 4)};
-`;
+mkdirSync(guestsDir, { recursive: true });
 
-writeFileSync(output, js, 'utf8');
+const activeUuids = new Set();
+
+for (const guest of invitados) {
+    const payload = {
+        uuid: guest.uuid,
+        nombre: guest.nombre,
+        cantidad: guest.cantidad
+    };
+    const filePath = join(guestsDir, `${guest.uuid}.json`);
+    writeFileSync(filePath, JSON.stringify(payload, null, 4) + '\n', 'utf8');
+    activeUuids.add(`${guest.uuid}.json`);
+}
+
+for (const fileName of readdirSync(guestsDir)) {
+    if (!fileName.endsWith('.json')) continue;
+    if (!activeUuids.has(fileName)) {
+        unlinkSync(join(guestsDir, fileName));
+    }
+}
 
 const now = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
 const urlRows = invitados.map(guest => {
@@ -101,5 +116,5 @@ ${urlRows.join('\n')}
 
 writeFileSync(urlsDoc, md, 'utf8');
 
-console.log(`✓ ${invitados.length} invitados → js/invitados-data.js`);
+console.log(`✓ ${invitados.length} invitados → data/guests/*.json`);
 console.log(`✓ Enlaces → invitados-urls.md`);

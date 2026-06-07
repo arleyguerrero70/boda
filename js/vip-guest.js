@@ -1,6 +1,8 @@
 (function () {
-    const data = window.INVITADOS_DATA || [];
+    const GUESTS_BASE = 'data/guests';
     const UUID_V4_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+    let cachedInvitado = null;
 
     function isUuid(value) {
         return UUID_V4_RE.test(String(value).trim().toLowerCase());
@@ -17,17 +19,28 @@
         return null;
     }
 
-    function findInvitado(uuid) {
-        if (!uuid || !data.length) return null;
+    async function loadInvitadoFromUrl() {
+        if (cachedInvitado) return cachedInvitado;
 
-        const normalized = String(uuid).trim().toLowerCase();
-        if (!isUuid(normalized)) return null;
+        const uuid = getInviteId();
+        if (!uuid) return null;
 
-        return data.find(guest => guest.uuid === normalized) || null;
+        try {
+            const response = await fetch(`${GUESTS_BASE}/${uuid}.json`, { cache: 'no-store' });
+            if (!response.ok) return null;
+
+            const guest = await response.json();
+            if (!guest || guest.uuid !== uuid) return null;
+
+            cachedInvitado = guest;
+            return cachedInvitado;
+        } catch {
+            return null;
+        }
     }
 
-    function findInvitadoFromUrl() {
-        return findInvitado(getInviteId());
+    function getInvitado() {
+        return cachedInvitado;
     }
 
     function populateGuestsSelect(cantidadMaxima) {
@@ -45,8 +58,9 @@
     }
 
     window.VipGuest = {
-        findInvitado,
-        findInvitadoFromUrl,
+        ready: loadInvitadoFromUrl(),
+        getInvitado,
+        loadInvitadoFromUrl,
         populateGuestsSelect
     };
 })();

@@ -3,3 +3,5 @@ invitados.md
 invitados-urls.md
 js/invitados-data.js
 data/invitados-uuids.json
+data/guests/*.json
+!data/guests/.gitkeep
