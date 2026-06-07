@@ -28,6 +28,19 @@ const CONFIG = {
         location   : 'Parroquia Nuestra Señora de La Peña, Bogotá, Colombia',
         description: 'Ceremonia religiosa de la boda de Juan Andres y Juliana.',
         mapsUrl    : 'https://share.google/9GTFovjgIm96LINzW'
+    },
+
+    reception: {
+        title      : 'Boda Juan Andres & Juliana — Recepción',
+        start      : '2026-08-07T19:00:00',
+        end        : '2026-08-07T23:30:00',
+        dateLabel  : 'Viernes, 7 de agosto de 2026',
+        timeLabel  : '7:00 p.m.',
+        venue      : 'Centro de Servicios Culturales y Recreativos Nueva Santafe',
+        location   : 'Centro de Servicios Culturales y Recreativos Nueva Santafe, Bogotá, Colombia',
+        description: 'Recepción, cena y celebración con nuestros invitados especiales.',
+        mapsUrl    : 'https://maps.app.goo.gl/pqWMXQd3QwdJEbtc8',
+        mapsEmbed  : 'Centro+de+Servicios+Culturales+y+Recreativos+Nueva+Santafe+Bogotá+Colombia'
     }
 };
 
@@ -194,12 +207,9 @@ document.querySelectorAll('.animate').forEach(el => observer.observe(el));
 })();
 
 /* ═══════════════════════════════════════════════════════════════
-   AGREGAR AL CALENDARIO — Ceremonia
+   AGREGAR AL CALENDARIO — Ceremonia y recepción
 ═══════════════════════════════════════════════════════════════ */
-(function initCalendarButton() {
-    const link = document.getElementById('btn-add-calendar');
-    if (!link || !CONFIG.ceremony) return;
-
+(function initCalendarButtons() {
     function toCalendarDate(isoLocal) {
         const [date, time] = isoLocal.split('T');
         const [y, m, d] = date.split('-');
@@ -224,7 +234,41 @@ document.querySelectorAll('.animate').forEach(el => observer.observe(el));
         return `https://calendar.google.com/calendar/render?${params.toString()}`;
     }
 
-    link.href = buildGoogleCalendarUrl(CONFIG.ceremony);
+    const ceremonyLink = document.getElementById('btn-add-calendar');
+    if (ceremonyLink && CONFIG.ceremony) {
+        ceremonyLink.href = buildGoogleCalendarUrl(CONFIG.ceremony);
+    }
+
+    const receptionLink = document.getElementById('btn-add-reception-calendar');
+    if (receptionLink && CONFIG.reception) {
+        receptionLink.href = buildGoogleCalendarUrl(CONFIG.reception);
+    }
+})();
+
+/* ═══════════════════════════════════════════════════════════════
+   RECEPCIÓN — detalles del evento
+═══════════════════════════════════════════════════════════════ */
+(function initReceptionDetails() {
+    const r = CONFIG.reception;
+    if (!r) return;
+
+    const venueEl = document.getElementById('reception-venue');
+    const dateEl  = document.getElementById('reception-date');
+    const timeEl  = document.getElementById('reception-time');
+    const mapsEl  = document.getElementById('reception-maps-link');
+    const iframe  = document.getElementById('reception-map');
+
+    if (venueEl) venueEl.textContent = r.venue;
+    if (dateEl)  dateEl.textContent  = r.dateLabel;
+    if (timeEl)  timeEl.textContent  = r.timeLabel;
+
+    if (mapsEl && r.mapsUrl) {
+        mapsEl.href = r.mapsUrl;
+    }
+
+    if (iframe && r.mapsEmbed) {
+        iframe.src = `https://maps.google.com/maps?q=${r.mapsEmbed}&output=embed&z=16`;
+    }
 })();
 
 /* ═══════════════════════════════════════════════════════════════

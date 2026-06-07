@@ -849,8 +849,12 @@ a:hover {
     max-width: 760px;
 }
 
-section:not(#hero) {
+section:not(#hero):not(#avisos) {
     padding: 6rem 0;
+}
+
+#avisos {
+    padding: 0 0 2.5rem 0;
 }
 
 /* ═══════════════════════════════════════════
@@ -1144,10 +1148,10 @@ section:not(#hero) {
 }
 
 .magic-ink__line {
-    display       : block;
-    hyphens       : none;
-    word-break    : normal;
-    overflow-wrap : break-word;
+    display      : block;
+    hyphens      : none;
+    word-break   : normal;
+    overflow-wrap: break-word;
 }
 
 .magic-ink__line+.magic-ink__line {
@@ -1293,11 +1297,11 @@ section:not(#hero) {
 }
 
 .photo-masonry--compact .photo-masonry__item {
-    margin-bottom: 0;
-    border-radius: clamp(10px, 1.6vw, 16px);
-    display      : flex;
+    margin-bottom : 0;
+    border-radius : clamp(10px, 1.6vw, 16px);
+    display       : flex;
     flex-direction: column;
-    min-height   : 0;
+    min-height    : 0;
 }
 
 .photo-masonry--compact .photo-masonry__item--square {
@@ -1349,19 +1353,19 @@ section:not(#hero) {
 }
 
 .photo-interlude__item {
-    margin       : 0;
-    overflow     : hidden;
-    border-radius: clamp(14px, 2vw, 20px);
-    background   : var(--surface-2);
-    flex-shrink  : 0;
-    display      : flex;
+    margin        : 0;
+    overflow      : hidden;
+    border-radius : clamp(14px, 2vw, 20px);
+    background    : var(--surface-2);
+    flex-shrink   : 0;
+    display       : flex;
     flex-direction: column;
 }
 
 .photo-interlude__col .photo-interlude__item:last-child {
-    flex         : 1 1 auto;
-    aspect-ratio : auto;
-    min-height   : 0;
+    flex        : 1 1 auto;
+    aspect-ratio: auto;
+    min-height  : 0;
 }
 
 .photo-interlude__item--wide {
@@ -2105,16 +2109,13 @@ section:not(#hero) {
     margin-bottom: 0.5rem;
 }
 
-.reception-body {
-    text-align: center;
-}
-
 .reception-text {
-    font-size  : 1.05rem;
-    color      : var(--text-light);
-    max-width  : 560px;
-    margin     : 0 auto 2rem;
-    line-height: 1.85;
+    font-size    : 1.05rem;
+    color        : var(--ink-muted);
+    max-width    : 560px;
+    margin       : 0 auto 2.5rem;
+    line-height  : 1.85;
+    text-align   : center;
 }
 
 .reception-detail-card {
@@ -2289,7 +2290,7 @@ section:not(#hero) {
    DESKTOP — protagonistas visibles (hero, recuerdos, footer)
 ═══════════════════════════════════════════ */
 @media (min-width: 992px) {
-    section:not(#hero):not(.photo-banner):not(.photo-interlude) {
+    section:not(#hero):not(.photo-banner):not(.photo-interlude):not(#avisos) {
         padding: 7.5rem 0;
     }
 
@@ -2413,7 +2414,7 @@ section:not(#hero) {
 }
 
 @media (min-width: 1280px) {
-    section:not(#hero):not(.photo-banner):not(.photo-interlude) {
+    section:not(#hero):not(.photo-banner):not(.photo-interlude):not(#avisos) {
         padding: 8.5rem 0;
     }
 
@@ -2471,7 +2472,7 @@ section:not(#hero) {
    RESPONSIVE
 ═══════════════════════════════════════════ */
 @media (max-width: 768px) {
-    section:not(#hero):not(.photo-banner):not(.photo-interlude) {
+    section:not(#hero):not(.photo-banner):not(.photo-interlude):not(#avisos) {
         padding: 4rem 0;
     }
 
