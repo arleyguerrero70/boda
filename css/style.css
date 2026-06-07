@@ -231,6 +231,7 @@ body.envelope-locked {
     display        : flex;
     align-items    : center;
     justify-content: center;
+    padding-inline : max(1rem, env(safe-area-inset-left, 0px)) max(1rem, env(safe-area-inset-right, 0px));
     transition     : opacity 0.7s ease, visibility 0.7s ease;
 }
 
@@ -249,15 +250,16 @@ body.envelope-locked {
     justify-content: center;
     gap            : 1.75rem;
     perspective    : 1600px;
-    padding        : 1.5rem 1rem 6rem;
-    width          : 100%;
-    max-width      : 400px;
-    min-height     : 100%;
+    padding        : 1.5rem 1.25rem;
+    width          : min(100%, 400px);
+    margin-inline  : auto;
 }
 
 .envelope {
     position                   : relative;
-    width                      : min(78vw, 300px);
+    display                    : block;
+    width                      : min(70vw, 280px);
+    margin-inline              : auto;
     flex-shrink                : 0;
     padding                    : 0;
     border                     : none;
@@ -279,21 +281,23 @@ body.envelope-locked {
     display        : block;
     width          : 100%;
     transform-style: preserve-3d;
-    border-radius  : 2px;
-    overflow       : hidden;
     border-radius  : 16px;
+    overflow       : hidden;
     box-shadow     : 0 16px 40px rgba(13, 27, 42, 0.14);
 }
 
 .envelope__media {
-    display    : block;
-    line-height: 0;
+    display      : block;
+    line-height  : 0;
+    border-radius: 16px;
+    overflow     : hidden;
 }
 
 .envelope__img {
     width            : 100%;
     height           : auto;
     display          : block;
+    border-radius    : 16px;
     user-select      : none;
     -webkit-user-drag: none;
     pointer-events   : none;
@@ -364,6 +368,7 @@ body.envelope-locked {
     transform-origin   : top center;
     transition         : transform 1.15s cubic-bezier(0.42, 0.02, 0.18, 1);
     backface-visibility: hidden;
+    border-radius      : 16px 16px 0 0;
 }
 
 .envelope__img--flap {
@@ -408,6 +413,11 @@ body.envelope-locked {
 
 .envelope-intro--opening .envelope__shell {
     overflow: visible;
+}
+
+.envelope-intro--opening .envelope__media {
+    overflow     : hidden;
+    border-radius: 16px;
 }
 
 .envelope-intro--opening .envelope__flap {
@@ -1618,16 +1628,21 @@ section:not(#hero):not(#avisos) {
 .btn-calendar:hover {
     background  : rgba(26, 47, 74, 0.05);
     border-color: var(--accent-navy);
+    color       : var(--accent-navy);
     transform   : translateY(-1px);
 }
 
 .btn-calendar:active {
-    transform: translateY(0);
+    background  : rgba(26, 47, 74, 0.1);
+    border-color: var(--accent-navy);
+    color       : var(--accent-navy);
+    transform   : translateY(0);
 }
 
 .btn-calendar:focus-visible {
     outline       : 2px solid var(--accent-navy);
     outline-offset: 3px;
+    color         : var(--accent-navy);
 }
 
 /* ═══════════════════════════════════════════
@@ -1727,6 +1742,19 @@ section:not(#hero):not(#avisos) {
     text-align: center;
 }
 
+.dresscode-figure {
+    margin        : 0 auto clamp(1.5rem, 3vw, 2rem);
+    display       : flex;
+    justify-content: center;
+}
+
+.dresscode-illustration {
+    display: block;
+    width  : clamp(210px, 44vw, 300px);
+    height : auto;
+    opacity: 0.94;
+}
+
 .dresscode-main {
     font-family  : var(--font-serif);
     font-style   : italic;
@@ -1811,17 +1839,25 @@ section:not(#hero):not(#avisos) {
 }
 
 .gift-info__figure {
-    margin    : 0;
-    padding   : clamp(0.85rem, 2vw, 1.25rem);
-    background: #fff;
-    border    : 1px solid var(--border-soft);
-    box-shadow: 0 10px 28px rgba(13, 27, 42, 0.08);
+    margin     : 0;
+    display    : flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.gift-info__img {
+.gift-info__icon {
     display: block;
-    width  : 100%;
+    width  : clamp(110px, 18vw, 160px);
     height : auto;
+    color  : var(--accent-navy);
+}
+
+.gift-info__icon-seal {
+    color: var(--gold-dark);
+}
+
+.gift-info__icon-spark {
+    color: var(--gold);
 }
 
 .gift-info__text {
@@ -2497,7 +2533,11 @@ section:not(#hero):not(#avisos) {
     }
 
     .gift-info__figure {
-        max-width: 180px;
+        max-width: 140px;
+    }
+
+    .gift-info__icon {
+        width: 120px;
     }
 
     .col-map iframe {

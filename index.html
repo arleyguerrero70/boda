@@ -36,7 +36,6 @@
                         <p class="envelope__monogram">J &amp; J</p>
                         <p class="envelope__label">Pase reservado:</p>
                         <p class="envelope__guest" id="envelope-guest">Estás invitado</p>
-                        <p class="envelope__party" id="envelope-party" hidden></p>
                     </div>
 
                     <div class="envelope__flap" aria-hidden="true">
@@ -371,17 +370,32 @@
     <!-- ══════════════════════════════ REGALO ══════════════════════════════ -->
     <section id="regalo" class="bg-dark" aria-label="Información sobre obsequio">
         <div class="container container-narrow">
+            <div class="section-header animate">
+                <h2 class="section-title">Lluvia de sobres*</h2>
+                <div class="divider">
+                    <svg viewBox="0 0 320 24" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+                        <line x1="0" y1="12" x2="120" y2="12" stroke="currentColor" stroke-width="0.5"/>
+                        <polygon points="132,12 140,6 148,12 140,18" fill="currentColor"/>
+                        <circle cx="160" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="0.8"/>
+                        <polygon points="172,12 180,6 188,12 180,18" fill="currentColor"/>
+                        <line x1="200" y1="12" x2="320" y2="12" stroke="currentColor" stroke-width="0.5"/>
+                    </svg>
+                </div>
+            </div>
+
             <div class="gift-info animate">
-                <figure class="gift-info__figure">
-                    <img
-                        class="gift-info__img"
-                        src="img/sobre.jpeg"
-                        alt="Ilustración de un sobre con flores"
-                        width="480"
-                        height="640"
-                        loading="lazy"
-                        decoding="async"
-                    >
+                <figure class="gift-info__figure" aria-hidden="true">
+                    <svg class="gift-info__icon" viewBox="0 0 120 96" xmlns="http://www.w3.org/2000/svg" fill="none">
+                        <path class="gift-info__icon-body" d="M12 34h96v50a4 4 0 0 1-4 4H16a4 4 0 0 1-4-4V34z" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+                        <path class="gift-info__icon-body" d="M12 34l48 28 48-28" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path class="gift-info__icon-flap" d="M12 34 60 18l48 16" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <circle class="gift-info__icon-seal" cx="60" cy="46" r="9" stroke="currentColor" stroke-width="1.1"/>
+                        <path class="gift-info__icon-seal" d="M60 40.5c-1.8 0-2.9 1.1-2.9 2.5 0 2 2.9 3.6 2.9 3.6s2.9-1.6 2.9-3.6c0-1.4-1.1-2.5-2.9-2.5z" stroke="currentColor" stroke-width="0.9" stroke-linejoin="round"/>
+                        <path class="gift-info__icon-spark" d="M28 18v5M25.5 20.5h5" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.45"/>
+                        <path class="gift-info__icon-spark" d="M92 22v4M90 24h4" stroke="currentColor" stroke-width="0.8" stroke-linecap="round" opacity="0.45"/>
+                        <circle class="gift-info__icon-spark" cx="98" cy="16" r="1.2" fill="currentColor" opacity="0.35"/>
+                        <circle class="gift-info__icon-spark" cx="22" cy="24" r="1" fill="currentColor" opacity="0.35"/>
+                    </svg>
                 </figure>
                 <p class="gift-info__text">
                     Contar con ustedes es nuestro mayor regalo. Pero si desean pueden hacernos un obsequio en efectivo. Tendremos un cofre en la recepción
@@ -407,6 +421,18 @@
             </div>
 
             <div class="dresscode-body animate">
+                <figure class="dresscode-figure" aria-hidden="true">
+                    <img
+                        class="dresscode-illustration"
+                        src="img/dresscode-attire-2.png"
+                        alt=""
+                        width="512"
+                        height="512"
+                        loading="lazy"
+                        decoding="async"
+                    >
+                </figure>
+
                 <p class="dresscode-main">Formal Elegante</p>
                 <p class="dresscode-sub">Te pedimos honrar esta ocasión especial con tu mejor vestimenta y <b> no hacer uso de los siguientes colores</b></p>
 
@@ -480,13 +506,13 @@
                 </div>
 
                 <div class="field-group" id="guests-field">
-                    <label for="guests">Número de acompañantes</label>
+                    <label for="guests">Numero de asistentes</label>
                     <select id="guests" name="guests">
-                        <option value="0">Solo yo (sin acompañantes)</option>
-                        <option value="1">1 acompañante</option>
-                        <option value="2">2 acompañantes</option>
-                        <option value="3">3 acompañantes</option>
-                        <option value="4">4 acompañantes</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
                     </select>
                 </div>
 
@@ -645,6 +671,8 @@
         </label>
     </div>
 
+    <script src="js/invitados-data.js"></script>
+    <script src="js/vip-guest.js"></script>
     <script src="js/envelope.js"></script>
     <script src="js/script.js"></script>
 </body>

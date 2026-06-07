@@ -1,6 +1,5 @@
 const CONFIG = {
     weddingDate: new Date('2026-08-07T14:30:00'),   // ⚠️ Cambia la hora (T16:00:00 = 4PM)
-    vipKey: 'recepcion2026',                         // ⚠️ Cambia esta clave a algo secreto
     whatsappNumber: '573123587284',                  // ⚠️ Ej: 573001234567
 
     // ── Google Forms — Cómo obtener estos valores:
@@ -47,13 +46,13 @@ const CONFIG = {
 /* ═══════════════════════════════════════════════════════════════
    DETECCIÓN VIP
 ═══════════════════════════════════════════════════════════════ */
-const urlParams = new URLSearchParams(window.location.search);
-const isVIP = urlParams.get('vip') === CONFIG.vipKey;
+const invitado = window.VipGuest?.findInvitadoFromUrl();
+const isVIP = Boolean(invitado);
 
 if (isVIP) {
     document.body.classList.add('vip-active');
-    // Construir el botón de WhatsApp genérico (sin nombre, por si no han llenado el form)
     setWhatsAppBtn('');
+    window.VipGuest.populateGuestsSelect(invitado.cantidad);
 }
 
 /* ═══════════════════════════════════════════════════════════════

@@ -8,7 +8,6 @@
     const hint       = document.getElementById('envelope-hint');
     const siteShell  = document.getElementById('site-shell');
     const guestEl    = document.getElementById('envelope-guest');
-    const partyEl    = document.getElementById('envelope-party');
     const audioEl    = document.getElementById('bg-audio');
     const controlsEl = document.getElementById('music-controls');
     const toggleBtn  = document.getElementById('music-toggle');
@@ -16,20 +15,11 @@
 
     if (!intro || !envelope) return;
 
-    const params = new URLSearchParams(window.location.search);
-    const guestName = params.get('invitado') || params.get('guest');
-    const personas  = params.get('personas');
+    const invitado = window.VipGuest?.findInvitadoFromUrl();
+    const guestName = invitado?.nombre || null;
 
     if (guestName && guestEl) {
-        guestEl.textContent = decodeURIComponent(guestName.replace(/\+/g, ' '));
-    }
-
-    if (personas && partyEl) {
-        const n = parseInt(personas, 10);
-        if (!Number.isNaN(n) && n > 0) {
-            partyEl.textContent = n === 1 ? '1 persona' : `${n} personas`;
-            partyEl.hidden = false;
-        }
+        guestEl.textContent = guestName;
     }
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
