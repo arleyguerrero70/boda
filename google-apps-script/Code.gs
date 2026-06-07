@@ -5,15 +5,17 @@
  * ───────────
  * 1. En Google Forms → pestaña "Respuestas" → abrir la hoja de cálculo vinculada.
  * 2. En la hoja: Extensiones → Apps Script.
- * 3. Pega este archivo, revisa FORM_ID, ENTRIES y NAME_HEADER.
+ * 3. Pega este archivo y configura SPREADSHEET_ID, FORM_ID y ENTRIES.
+ *    SPREADSHEET_ID: en la URL de tu hoja de respuestas
+ *    https://docs.google.com/spreadsheets/d/ESTE_ES_EL_ID/edit
  * 4. Desplegar → Nueva implementación → Tipo: Aplicación web
  *      · Ejecutar como: Yo
  *      · Quién tiene acceso: Cualquier persona
  * 5. Copia la URL que termina en /exec → CONFIG.rsvpApiUrl en js/script.js
- *
- * IMPORTANTE: el script debe estar vinculado a la MISMA hoja donde llegan
- * las respuestas del formulario (SpreadsheetApp.getActiveSpreadsheet()).
  */
+
+/** ID de la hoja "Confirmación invitados (respuestas)" */
+const SPREADSHEET_ID = '1ETYoLBnhhrM94AWzFq3rCWx5YKgZWjCnES07PMn6bUA';
 
 const FORM_ID = '1FAIpQLSfhdPT-GcgcJjxaUU9lj_8yMBpUh6tVwicWNBRdak-GMLpJmw';
 
@@ -27,17 +29,27 @@ const ENTRIES = {
 /** Texto exacto del encabezado de la columna del nombre en la fila 1 */
 const NAME_HEADER = 'Nombre completo';
 
+function wrapRsvp_(result) {
+  result.rsvp = true;
+  return result;
+}
+
 function doGet(e) {
-  const action = e.parameter.action || 'check';
-  const name = (e.parameter.name || '').trim();
-  const callback = e.parameter.callback;
+  const params = (e && e.parameter) || {};
+  const action = params.action || 'check';
+  const name = (params.name || '').trim();
+  const callback = params.callback;
 
   let result;
-  if (action === 'check') {
-    if (!name) result = { error: 'missing_name' };
-    else result = { alreadySubmitted: nameExists_(name) };
-  } else {
-    result = { error: 'unknown_action' };
+  try {
+    if (action === 'check') {
+      if (!name) result = wrapRsvp_({ error: 'missing_name' });
+      else result = wrapRsvp_({ alreadySubmitted: nameExists_(name) });
+    } else {
+      result = wrapRsvp_({ error: 'unknown_action' });
+    }
+  } catch (err) {
+    result = wrapRsvp_({ error: String(err.message || err) });
   }
 
   if (callback) {
@@ -62,30 +74,50 @@ function doPost(e) {
 
   if (action === 'check') {
     if (!name) return json_({ error: 'missing_name' });
-    return json_({ alreadySubmitted: nameExists_(name) });
+    try {
+      return json_({ alreadySubmitted: nameExists_(name) });
+    } catch (err) {
+      return json_({ error: String(err.message || err) });
+    }
   }
 
   if (!name) return json_({ ok: false, error: 'missing_name' });
 
-  if (nameExists_(name)) {
-    return json_({ ok: false, alreadySubmitted: true });
+  try {
+    if (nameExists_(name)) {
+      return json_({ ok: false, alreadySubmitted: true });
+    }
+  } catch (err) {
+    return json_({ ok: false, error: String(err.message || err) });
   }
 
   try {
     postToGoogleForm_(payload);
-    return json_({ ok: true });
+    return json_(wrapRsvp_({ ok: true }));
   } catch (err) {
-    return json_({ ok: false, error: String(err) });
+    return json_(wrapRsvp_({ ok: false, error: String(err.message || err) }));
   }
 }
 
 function parsePayload_(e) {
-  const raw = (e.parameter && e.parameter.payload) || (e.postData && e.postData.contents) || '';
+  const params = (e && e.parameter) || {};
+  const raw = params.payload || (e.postData && e.postData.contents) || '';
   return JSON.parse(raw);
 }
 
+function getResponseSheet_() {
+  const active = SpreadsheetApp.getActiveSpreadsheet();
+  if (active) return active.getSheets()[0];
+
+  if (!SPREADSHEET_ID || SPREADSHEET_ID === 'REEMPLAZA_CON_TU_SPREADSHEET_ID') {
+    throw new Error('Configura SPREADSHEET_ID en Código.gs con el ID de tu hoja de respuestas');
+  }
+
+  return SpreadsheetApp.openById(SPREADSHEET_ID).getSheets()[0];
+}
+
 function nameExists_(name) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
+  const sheet = getResponseSheet_();
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
 
   let nameCol = headers.findIndex(h => String(h).trim() === NAME_HEADER);

@@ -5,7 +5,7 @@ const CONFIG = {
     //    1. Sigue las instrucciones en google-apps-script/Code.gs
     //    2. Despliega la app web y pega aquí la URL /exec
     // ─────────────────────────────────────────────────────────
-    rsvpApiUrl: 'https://script.google.com/macros/s/AKfycbw59b3iNePXdYZFff3mnTwtCo-iceAT2YH-ebLCxWtR1CJDrQPZ68rn557EW0doF5-h/exec',
+    rsvpApiUrl: 'https://script.google.com/macros/s/AKfycbxcerz6yc6DHUBmEYNhZJBai099UcCVVOH2arBFqOWij9SbO-_LsM3WmGZsmBItUUu1/exec',
 
     ceremony: {
         title      : 'Boda Juan Andres & Juliana — Ceremonia',
@@ -297,7 +297,7 @@ function showRsvpAlreadyAnswered() {
     if (alreadyDiv) alreadyDiv.style.display = 'block';
 }
 
-/** JSONP — evita CORS en la verificación (GET) */
+/** JSONP — compatible con Apps Script (sin iframes) */
 function rsvpJsonp(params) {
     return new Promise((resolve, reject) => {
         const callback = '_rsvpCb_' + Date.now();
@@ -307,17 +307,30 @@ function rsvpJsonp(params) {
         });
         url.searchParams.set('callback', callback);
 
-        window[callback] = data => {
+        const timeout = setTimeout(() => {
+            cleanup();
+            reject(new Error('timeout'));
+        }, 15000);
+
+        function cleanup() {
+            clearTimeout(timeout);
             delete window[callback];
-            script.remove();
+            script?.remove();
+        }
+
+        window[callback] = data => {
+            cleanup();
+            if (!data?.rsvp) {
+                reject(new Error('invalid response'));
+                return;
+            }
             resolve(data);
         };
 
         const script = document.createElement('script');
         script.src = url.toString();
         script.onerror = () => {
-            delete window[callback];
-            script.remove();
+            cleanup();
             reject(new Error('jsonp failed'));
         };
         document.head.appendChild(script);
@@ -326,6 +339,7 @@ function rsvpJsonp(params) {
 
 async function checkRsvpAlreadySubmitted(name) {
     const data = await rsvpJsonp({ action: 'check', name });
+    if (data.error) throw new Error(data.error);
     return data.alreadySubmitted === true;
 }
 
@@ -393,8 +407,13 @@ if (form) {
             }
 
             showRsvpSuccess(name);
-        } catch (_) {
-            showError('No se pudo conectar con el servidor. Intenta de nuevo.');
+        } catch (err) {
+            const msg = String(err.message || err);
+            if (msg.includes('SPREADSHEET_ID') || msg.includes('Configura')) {
+                showError('Error de configuración del servidor. Contacta a los novios.');
+            } else {
+                showError('No se pudo conectar con el servidor. Intenta de nuevo.');
+            }
         } finally {
             setBusy(false);
         }
