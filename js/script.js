@@ -297,24 +297,55 @@ function showRsvpAlreadyAnswered() {
     if (alreadyDiv) alreadyDiv.style.display = 'block';
 }
 
-async function rsvpApiRequest(payload) {
-    // text/plain evita el preflight CORS que bloquea application/json
-    const res = await fetch(CONFIG.rsvpApiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(payload),
+/** JSONP — evita CORS en la verificación (GET) */
+function rsvpJsonp(params) {
+    return new Promise((resolve, reject) => {
+        const callback = '_rsvpCb_' + Date.now();
+        const url = new URL(CONFIG.rsvpApiUrl);
+        Object.entries(params).forEach(([key, value]) => {
+            url.searchParams.set(key, value);
+        });
+        url.searchParams.set('callback', callback);
+
+        window[callback] = data => {
+            delete window[callback];
+            script.remove();
+            resolve(data);
+        };
+
+        const script = document.createElement('script');
+        script.src = url.toString();
+        script.onerror = () => {
+            delete window[callback];
+            script.remove();
+            reject(new Error('jsonp failed'));
+        };
+        document.head.appendChild(script);
     });
-    if (!res.ok) throw new Error('api failed');
-    return res.json();
 }
 
 async function checkRsvpAlreadySubmitted(name) {
-    const data = await rsvpApiRequest({ action: 'check', name });
+    const data = await rsvpJsonp({ action: 'check', name });
     return data.alreadySubmitted === true;
 }
 
+/**
+ * POST con URLSearchParams (petición "simple", sin preflight).
+ * Si CORS sigue bloqueando la lectura de la respuesta, reintenta en no-cors
+ * (el servidor ya validó duplicados en doPost).
+ */
 async function submitRsvp(data) {
-    return rsvpApiRequest({ action: 'submit', ...data });
+    const body = new URLSearchParams();
+    body.append('payload', JSON.stringify({ action: 'submit', ...data }));
+
+    try {
+        const res = await fetch(CONFIG.rsvpApiUrl, { method: 'POST', body });
+        if (!res.ok) throw new Error('submit failed');
+        return res.json();
+    } catch {
+        await fetch(CONFIG.rsvpApiUrl, { method: 'POST', mode: 'no-cors', body });
+        return { ok: true };
+    }
 }
 
 if (form) {
@@ -344,6 +375,11 @@ if (form) {
         setBusy(true);
 
         try {
+            if (await checkRsvpAlreadySubmitted(name)) {
+                showRsvpAlreadyAnswered();
+                return;
+            }
+
             const result = await submitRsvp({ name, attending, guests, message });
 
             if (result.alreadySubmitted) {

@@ -30,19 +30,29 @@ const NAME_HEADER = 'Nombre completo';
 function doGet(e) {
   const action = e.parameter.action || 'check';
   const name = (e.parameter.name || '').trim();
+  const callback = e.parameter.callback;
 
+  let result;
   if (action === 'check') {
-    if (!name) return json_({ error: 'missing_name' });
-    return json_({ alreadySubmitted: nameExists_(name) });
+    if (!name) result = { error: 'missing_name' };
+    else result = { alreadySubmitted: nameExists_(name) };
+  } else {
+    result = { error: 'unknown_action' };
   }
 
-  return json_({ error: 'unknown_action' });
+  if (callback) {
+    return ContentService
+      .createTextOutput(callback + '(' + JSON.stringify(result) + ')')
+      .setMimeType(ContentService.MimeType.JAVASCRIPT);
+  }
+
+  return json_(result);
 }
 
 function doPost(e) {
   let payload = {};
   try {
-    payload = JSON.parse(e.postData.contents);
+    payload = parsePayload_(e);
   } catch (err) {
     return json_({ ok: false, error: 'invalid_json' });
   }
@@ -69,6 +79,11 @@ function doPost(e) {
   }
 }
 
+function parsePayload_(e) {
+  const raw = (e.parameter && e.parameter.payload) || (e.postData && e.postData.contents) || '';
+  return JSON.parse(raw);
+}
+
 function nameExists_(name) {
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheets()[0];
   const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
@@ -87,7 +102,7 @@ function nameExists_(name) {
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return false;
 
-  const names = sheet.getRange(2, nameCol + 1, lastRow - 1, 1).getValues();
+  const names = sheet.getRange(2, nameCol + 1, lastRow, nameCol + 1).getValues();
   return names.some(row => normalizeName_(row[0]) === normalized);
 }
 
