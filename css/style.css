@@ -1286,7 +1286,7 @@ section:not(#hero) {
    PAUSA VISUAL — entre countdown y ceremonia
 ═══════════════════════════════════════════ */
 .photo-interlude {
-    padding   : 0 !important;
+    padding   : clamp(1.5rem, 4vw, 2.5rem) 0 !important;
     background: var(--surface-1);
     overflow  : hidden;
 }
@@ -1294,20 +1294,58 @@ section:not(#hero) {
 .photo-interlude__grid {
     display              : grid;
     grid-template-columns: 1fr 1fr;
-    gap                  : 4px;
-    margin               : 0;
+    gap                  : clamp(10px, 1.2vw, 16px);
+    max-width            : min(920px, 100%);
+    margin               : 0 auto;
+    padding              : 0 clamp(1rem, 3vw, 2rem);
+    align-items          : stretch;
+}
+
+.photo-interlude__col {
+    display       : flex;
+    flex-direction: column;
+    gap           : clamp(10px, 1.2vw, 16px);
+    min-height    : 100%;
 }
 
 .photo-interlude__item {
-    margin      : 0;
-    overflow    : hidden;
+    margin       : 0;
+    overflow     : hidden;
+    border-radius: clamp(14px, 2vw, 20px);
+    background   : var(--surface-2);
+    flex-shrink  : 0;
+    display      : flex;
+    flex-direction: column;
+}
+
+.photo-interlude__col .photo-interlude__item:last-child {
+    flex         : 1 1 auto;
+    aspect-ratio : auto;
+    min-height   : 0;
+}
+
+.photo-interlude__item--wide {
+    aspect-ratio: 4 / 3;
+}
+
+.photo-interlude__item--square {
+    aspect-ratio: 1 / 1;
+}
+
+.photo-interlude__item--tall {
     aspect-ratio: 3 / 4;
-    background  : var(--surface-2);
+}
+
+.photo-interlude__col .photo-interlude__item:last-child.photo-interlude__item--square,
+.photo-interlude__col .photo-interlude__item:last-child.photo-interlude__item--tall {
+    aspect-ratio: auto;
 }
 
 .photo-interlude__item img {
     width          : 100%;
     height         : 100%;
+    flex           : 1 1 auto;
+    min-height     : 0;
     object-fit     : cover;
     object-position: center;
     display        : block;
@@ -1315,14 +1353,12 @@ section:not(#hero) {
 }
 
 @media (min-width: 769px) {
-    .photo-interlude__grid {
-        gap    : 6px;
-        padding: 0 2rem;
+    .photo-interlude {
+        padding: clamp(2.5rem, 5vh, 4rem) 0 !important;
     }
 
-    .photo-interlude__item {
-        aspect-ratio : 4 / 5;
-        border-radius: 3px;
+    .photo-interlude__grid {
+        padding: 0 clamp(2rem, 4vw, 3.5rem);
     }
 }
 
@@ -2302,13 +2338,8 @@ section:not(#hero) {
     }
 
     /* Pausa visual entre secciones */
-    .photo-interlude {
-        padding: clamp(2.5rem, 5vh, 4rem) 0 !important;
-    }
-
     .photo-interlude__grid {
-        padding: 0 clamp(2rem, 4vw, 3.5rem);
-        gap    : clamp(10px, 1.2vw, 16px);
+        max-width: min(960px, 100%);
     }
 
     /* Footer */
