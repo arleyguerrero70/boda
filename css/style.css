@@ -1121,29 +1121,53 @@ section:not(#hero) {
 
 #recuerdos.photo-banner {
     min-height     : min(78vh, 860px);
-    align-items    : flex-start;
+    align-items    : stretch;
     justify-content: center;
+}
+
+#recuerdos .photo-banner__inner {
+    display        : flex;
+    flex-direction : column;
+    justify-content: center;
+    align-items    : center;
+    flex           : 1;
+    width          : 100%;
+    margin         : 0 auto;
+    padding        : clamp(2rem, 5vh, 3.5rem) clamp(1.5rem, 4vw, 2rem);
 }
 
 #recuerdos .photo-banner__quote {
     font-size  : clamp(1.15rem, 1.75vw, 1.6rem);
     line-height: 1.65;
     min-height : auto;
+    margin     : 0;
 }
 
 .magic-ink__line {
-    display: block;
+    display       : block;
+    hyphens       : none;
+    word-break    : normal;
+    overflow-wrap : break-word;
 }
 
 .magic-ink__line+.magic-ink__line {
     margin-top: 0.35em;
 }
 
+.magic-ink__word {
+    display       : inline-block;
+    white-space   : nowrap;
+    vertical-align: baseline;
+}
+
 .magic-ink__char {
     opacity    : 0;
     filter     : blur(5px);
-    display    : inline-block;
     will-change: opacity, filter, text-shadow;
+}
+
+.magic-ink__word .magic-ink__char {
+    display: inline-block;
 }
 
 .magic-ink--writing .magic-ink__char {
@@ -1152,6 +1176,7 @@ section:not(#hero) {
 }
 
 .magic-ink__char--space {
+    display  : inline-block;
     min-width: 0.28em;
 }
 
@@ -1722,6 +1747,44 @@ section:not(#hero) {
 }
 
 /* ═══════════════════════════════════════════
+   AVISO INFORMATIVO (NO NIÑOS)
+═══════════════════════════════════════════ */
+.info-notice {
+    padding-top   : 0;
+    padding-bottom: clamp(4rem, 7vw, 6rem);
+}
+
+.info-notice__stack {
+    display       : flex;
+    flex-direction: column;
+    gap           : 1rem;
+}
+
+.info-notice__box {
+    max-width   : 640px;
+    margin      : 0 auto;
+    padding     : clamp(1.35rem, 3vw, 1.85rem) clamp(1.5rem, 4vw, 2.5rem);
+    text-align  : center;
+    background  : linear-gradient(135deg, #fdf6f5 0%, #f8ecea 100%);
+    border      : 1px solid rgba(158, 88, 88, 0.14);
+    border-left : 3px solid rgba(158, 88, 88, 0.32);
+    box-shadow  : 0 6px 24px rgba(158, 88, 88, 0.06);
+}
+
+.info-notice__text {
+    font-family: var(--font-body);
+    font-size  : clamp(0.95rem, 2vw, 1.05rem);
+    line-height: 1.75;
+    color      : rgba(19, 34, 54, 0.72);
+    margin     : 0;
+}
+
+.info-notice__label {
+    font-weight: 400;
+    color      : #8f5050;
+}
+
+/* ═══════════════════════════════════════════
    RSVP FORM
 ═══════════════════════════════════════════ */
 .rsvp-form {
@@ -2175,12 +2238,12 @@ section:not(#hero) {
         max-width: 90px;
     }
 
-    /* Nuestra historia — texto arriba, pareja respira abajo */
+    /* Nuestra historia — cita centrada sobre la foto */
     #recuerdos.photo-banner {
         min-height     : min(92vh, 940px);
         flex-direction : column;
-        align-items    : center;
-        justify-content: flex-start;
+        align-items    : stretch;
+        justify-content: center;
         margin-top     : 0.5rem;
     }
 
@@ -2202,6 +2265,10 @@ section:not(#hero) {
         padding      : clamp(5rem, 10vh, 7rem) 3rem clamp(14rem, 28vh, 20rem);
         margin-bottom: 0;
         max-width    : 680px;
+    }
+
+    #recuerdos .photo-banner__inner {
+        padding: clamp(2rem, 6vh, 4rem) 3rem;
     }
 
     .photo-banner__quote {
@@ -2271,12 +2338,12 @@ section:not(#hero) {
         min-height: min(94vh, 1000px);
     }
 
-    .photo-banner__bg {
+    #recuerdos .photo-banner__bg {
         object-position: 56% 60%;
     }
 
-    .photo-banner__inner {
-        padding-bottom: clamp(16rem, 30vh, 22rem);
+    #recuerdos .photo-banner__inner {
+        padding: clamp(2rem, 6vh, 4rem) 3rem;
     }
 
     .site-footer {

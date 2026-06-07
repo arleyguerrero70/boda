@@ -106,14 +106,39 @@ document.querySelectorAll('.animate').forEach(el => observer.observe(el));
         const line = document.createElement('span');
         line.className = 'magic-ink__line';
 
-        [...text].forEach((char, i) => {
-            const span = document.createElement('span');
-            const isSpace = char === ' ';
-            span.className = 'magic-ink__char' + (isSpace ? ' magic-ink__char--space' : '');
-            span.style.setProperty('--char-i', startIndex + i);
-            span.textContent = isSpace ? '\u00A0' : char;
-            span.setAttribute('aria-hidden', 'true');
-            line.appendChild(span);
+        let charIndex = startIndex;
+        const tokens = text.split(/(\s+)/);
+
+        tokens.forEach(token => {
+            if (!token) return;
+
+            if (/^\s+$/.test(token)) {
+                [...token].forEach(() => {
+                    const span = document.createElement('span');
+                    span.className = 'magic-ink__char magic-ink__char--space';
+                    span.style.setProperty('--char-i', charIndex);
+                    span.textContent = '\u00A0';
+                    span.setAttribute('aria-hidden', 'true');
+                    line.appendChild(span);
+                    charIndex++;
+                });
+                return;
+            }
+
+            const word = document.createElement('span');
+            word.className = 'magic-ink__word';
+
+            [...token].forEach(char => {
+                const span = document.createElement('span');
+                span.className = 'magic-ink__char';
+                span.style.setProperty('--char-i', charIndex);
+                span.textContent = char;
+                span.setAttribute('aria-hidden', 'true');
+                word.appendChild(span);
+                charIndex++;
+            });
+
+            line.appendChild(word);
         });
 
         return line;
