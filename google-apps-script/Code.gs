@@ -1,5 +1,6 @@
 /**
  * RSVP — verificación de duplicados + envío a Google Forms
+ * Tracking — aperturas de enlaces VIP por invitado
  *
  * INSTALACIÓN
  * ───────────
@@ -12,6 +13,11 @@
  *      · Ejecutar como: Yo
  *      · Quién tiene acceso: Cualquier persona
  * 5. Copia la URL que termina en /exec → CONFIG.rsvpApiUrl en js/script.js
+ *
+ * APERTURAS
+ * ─────────
+ * Al abrir un enlace VIP se crea/actualiza la pestaña "Aperturas invitación"
+ * con columnas: UUID | Nombre | Primera visita | Última visita | Veces
  */
 
 /** ID de la hoja "Confirmación invitados (respuestas)" */
@@ -29,8 +35,16 @@ const ENTRIES = {
 /** Texto exacto del encabezado de la columna del nombre en la fila 1 */
 const NAME_HEADER = 'Nombre completo';
 
+/** Pestaña donde se registran aperturas de enlaces VIP */
+const OPENS_SHEET_NAME = 'Aperturas invitación';
+
 function wrapRsvp_(result) {
   result.rsvp = true;
+  return result;
+}
+
+function wrapTrack_(result) {
+  result.track = true;
   return result;
 }
 
@@ -45,11 +59,21 @@ function doGet(e) {
     if (action === 'check') {
       if (!name) result = wrapRsvp_({ error: 'missing_name' });
       else result = wrapRsvp_({ alreadySubmitted: nameExists_(name) });
+    } else if (action === 'track_open') {
+      const uuid = (params.uuid || '').trim();
+      const guestName = (params.name || '').trim();
+      if (!uuid) result = wrapTrack_({ error: 'missing_uuid' });
+      else {
+        trackOpen_(uuid, guestName);
+        result = wrapTrack_({ ok: true });
+      }
     } else {
       result = wrapRsvp_({ error: 'unknown_action' });
     }
   } catch (err) {
-    result = wrapRsvp_({ error: String(err.message || err) });
+    result = action === 'track_open'
+      ? wrapTrack_({ error: String(err.message || err) })
+      : wrapRsvp_({ error: String(err.message || err) });
   }
 
   if (callback) {
@@ -106,14 +130,8 @@ function parsePayload_(e) {
 }
 
 function getResponseSheet_() {
-  const active = SpreadsheetApp.getActiveSpreadsheet();
-  if (active) return active.getSheets()[0];
-
-  if (!SPREADSHEET_ID || SPREADSHEET_ID === 'REEMPLAZA_CON_TU_SPREADSHEET_ID') {
-    throw new Error('Configura SPREADSHEET_ID en Código.gs con el ID de tu hoja de respuestas');
-  }
-
-  return SpreadsheetApp.openById(SPREADSHEET_ID).getSheets()[0];
+  const ss = getSpreadsheet_();
+  return ss.getSheets()[0];
 }
 
 function nameExists_(name) {
@@ -144,6 +162,56 @@ function normalizeName_(value) {
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '');
+}
+
+function getSpreadsheet_() {
+  const active = SpreadsheetApp.getActiveSpreadsheet();
+  if (active) return active;
+
+  if (!SPREADSHEET_ID || SPREADSHEET_ID === 'REEMPLAZA_CON_TU_SPREADSHEET_ID') {
+    throw new Error('Configura SPREADSHEET_ID en Código.gs con el ID de tu hoja de respuestas');
+  }
+
+  return SpreadsheetApp.openById(SPREADSHEET_ID);
+}
+
+function getOpensSheet_() {
+  const ss = getSpreadsheet_();
+  let sheet = ss.getSheetByName(OPENS_SHEET_NAME);
+
+  if (!sheet) {
+    sheet = ss.insertSheet(OPENS_SHEET_NAME);
+    sheet.appendRow(['UUID', 'Nombre', 'Primera visita', 'Última visita', 'Veces']);
+    sheet.getRange(1, 1, 1, 5).setFontWeight('bold');
+    sheet.setFrozenRows(1);
+  }
+
+  return sheet;
+}
+
+function trackOpen_(uuid, name) {
+  const sheet = getOpensSheet_();
+  const normalizedUuid = String(uuid).trim().toLowerCase();
+  const now = new Date();
+  const lastRow = sheet.getLastRow();
+
+  if (lastRow >= 2) {
+    const rows = sheet.getRange(2, 1, lastRow, 5).getValues();
+
+    for (let i = 0; i < rows.length; i++) {
+      if (String(rows[i][0]).trim().toLowerCase() !== normalizedUuid) continue;
+
+      const rowNum = i + 2;
+      const visits = (Number(rows[i][4]) || 0) + 1;
+
+      if (name) sheet.getRange(rowNum, 2).setValue(name);
+      sheet.getRange(rowNum, 4).setValue(now);
+      sheet.getRange(rowNum, 5).setValue(visits);
+      return;
+    }
+  }
+
+  sheet.appendRow([normalizedUuid, name, now, now, 1]);
 }
 
 function postToGoogleForm_(data) {

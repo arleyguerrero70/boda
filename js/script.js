@@ -5,7 +5,7 @@ const CONFIG = {
     //    1. Sigue las instrucciones en google-apps-script/Code.gs
     //    2. Despliega la app web y pega aquí la URL /exec
     // ─────────────────────────────────────────────────────────
-    rsvpApiUrl: 'https://script.google.com/macros/s/AKfycbxcerz6yc6DHUBmEYNhZJBai099UcCVVOH2arBFqOWij9SbO-_LsM3WmGZsmBItUUu1/exec',
+    rsvpApiUrl: 'https://script.google.com/macros/s/AKfycbxmeKUhH3Ng1ay4qd2ymSciI6eYBn6IHDsB5f-o6NwpZ7uaZf57RZWiOdJG3C4eyysG/exec',
 
     ceremony: {
         title      : 'Boda Juan Andres & Juliana — Ceremonia',
@@ -42,6 +42,7 @@ window.VipGuest?.ready.then(async invitado => {
     guestName = invitado.nombre?.trim() || '';
     document.body.classList.add('vip-active');
     window.VipGuest.populateGuestsSelect(invitado.cantidad);
+    trackInviteOpen(invitado);
 
     if (guestName && isRsvpApiConfigured()) {
         try {
@@ -281,6 +282,36 @@ const successMsg = document.getElementById('success-message');
 function isRsvpApiConfigured() {
     const url = CONFIG.rsvpApiUrl;
     return url && !url.includes('REEMPLAZA');
+}
+
+/** Registra la apertura del enlace VIP (una vez por sesión del navegador). */
+function trackInviteOpen(invitado) {
+    if (!isRsvpApiConfigured() || !invitado?.uuid) return;
+
+    const key = 'track_' + invitado.uuid;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, '1');
+
+    const callback = '_trackCb_' + Date.now();
+    const url = new URL(CONFIG.rsvpApiUrl);
+    url.searchParams.set('action', 'track_open');
+    url.searchParams.set('uuid', invitado.uuid);
+    url.searchParams.set('name', invitado.nombre?.trim() || '');
+    url.searchParams.set('callback', callback);
+
+    window[callback] = () => {
+        delete window[callback];
+        script?.remove();
+    };
+
+    const script = document.createElement('script');
+    script.src = url.toString();
+    script.onerror = () => {
+        delete window[callback];
+        script.remove();
+        sessionStorage.removeItem(key);
+    };
+    document.head.appendChild(script);
 }
 
 function showRsvpSuccess(name) {
